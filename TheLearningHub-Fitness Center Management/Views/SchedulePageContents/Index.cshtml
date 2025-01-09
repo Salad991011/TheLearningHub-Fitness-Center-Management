@@ -1,0 +1,60 @@
+﻿@model IEnumerable<TheLearningHub_Fitness_Center_Management.Models.SchedulePageContent>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundTitle1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundDesc1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundImagePath1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduleTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduleDesc)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BackgroundTitle1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BackgroundDesc1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BackgroundImagePath1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleDesc)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.SchedulePageId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.SchedulePageId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.SchedulePageId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

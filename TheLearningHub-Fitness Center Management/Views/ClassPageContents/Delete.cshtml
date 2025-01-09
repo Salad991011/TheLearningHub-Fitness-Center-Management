@@ -1,0 +1,52 @@
+﻿@model TheLearningHub_Fitness_Center_Management.Models.ClassPageContent
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ClassPageContent</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BackgroundTitle1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BackgroundTitle1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BackgroundDesc1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BackgroundDesc1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BackgroundImagePath1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BackgroundImagePath1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassesTitle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ClassesTitle)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassesDesc)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ClassesDesc)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ClassPageId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

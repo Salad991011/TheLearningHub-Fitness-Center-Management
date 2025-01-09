@@ -1,0 +1,49 @@
+﻿@model TheLearningHub_Fitness_Center_Management.Models.SchedulePageContent
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>SchedulePageContent</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BackgroundTitle1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BackgroundTitle1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BackgroundDesc1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BackgroundDesc1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BackgroundImagePath1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BackgroundImagePath1)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ScheduleTitle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ScheduleTitle)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ScheduleDesc)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ScheduleDesc)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.SchedulePageId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

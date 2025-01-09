@@ -1,0 +1,50 @@
+﻿@model TheLearningHub_Fitness_Center_Management.Models.Paidplan
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Paidplan</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PlanTitle" class="control-label"></label>
+                <input asp-for="PlanTitle" class="form-control" />
+                <span asp-validation-for="PlanTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlanPrice" class="control-label"></label>
+                <input asp-for="PlanPrice" class="form-control" />
+                <span asp-validation-for="PlanPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlanDesc" class="control-label"></label>
+                <input asp-for="PlanDesc" class="form-control" />
+                <span asp-validation-for="PlanDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagePath" class="control-label"></label>
+                <input asp-for="ImagePath" class="form-control" />
+                <span asp-validation-for="ImagePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

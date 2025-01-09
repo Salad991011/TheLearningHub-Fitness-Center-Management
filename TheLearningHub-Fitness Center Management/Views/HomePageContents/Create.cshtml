@@ -1,0 +1,126 @@
+﻿@model TheLearningHub_Fitness_Center_Management.Models.HomePageContent
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>HomePageContent</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MainTitle" class="control-label"></label>
+                <input asp-for="MainTitle" class="form-control" />
+                <span asp-validation-for="MainTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundTitle1" class="control-label"></label>
+                <input asp-for="BackgroundTitle1" class="form-control" />
+                <span asp-validation-for="BackgroundTitle1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundDesc1" class="control-label"></label>
+                <input asp-for="BackgroundDesc1" class="form-control" />
+                <span asp-validation-for="BackgroundDesc1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundImagePath1" class="control-label"></label>
+                <input asp-for="BackgroundImagePath1" class="form-control" />
+                <span asp-validation-for="BackgroundImagePath1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CourselTextTitle" class="control-label"></label>
+                <input asp-for="CourselTextTitle" class="form-control" />
+                <span asp-validation-for="CourselTextTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CourselDesc" class="control-label"></label>
+                <input asp-for="CourselDesc" class="form-control" />
+                <span asp-validation-for="CourselDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CourselItemsTitle" class="control-label"></label>
+                <input asp-for="CourselItemsTitle" class="form-control" />
+                <span asp-validation-for="CourselItemsTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CourselItemsDesc" class="control-label"></label>
+                <input asp-for="CourselItemsDesc" class="form-control" />
+                <span asp-validation-for="CourselItemsDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundTitle2" class="control-label"></label>
+                <input asp-for="BackgroundTitle2" class="form-control" />
+                <span asp-validation-for="BackgroundTitle2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundDesc2" class="control-label"></label>
+                <input asp-for="BackgroundDesc2" class="form-control" />
+                <span asp-validation-for="BackgroundDesc2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundImagePath2" class="control-label"></label>
+                <input asp-for="BackgroundImagePath2" class="form-control" />
+                <span asp-validation-for="BackgroundImagePath2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TrainerTitle" class="control-label"></label>
+                <input asp-for="TrainerTitle" class="form-control" />
+                <span asp-validation-for="TrainerTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TrainerDesc" class="control-label"></label>
+                <input asp-for="TrainerDesc" class="form-control" />
+                <span asp-validation-for="TrainerDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServicesTitle" class="control-label"></label>
+                <input asp-for="ServicesTitle" class="form-control" />
+                <span asp-validation-for="ServicesTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServicesDesc1" class="control-label"></label>
+                <input asp-for="ServicesDesc1" class="form-control" />
+                <span asp-validation-for="ServicesDesc1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServicesImagePath2" class="control-label"></label>
+                <input asp-for="ServicesImagePath2" class="form-control" />
+                <span asp-validation-for="ServicesImagePath2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServicesDesc2" class="control-label"></label>
+                <input asp-for="ServicesDesc2" class="form-control" />
+                <span asp-validation-for="ServicesDesc2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FooterTitle" class="control-label"></label>
+                <input asp-for="FooterTitle" class="form-control" />
+                <span asp-validation-for="FooterTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FooterTitleDesc" class="control-label"></label>
+                <input asp-for="FooterTitleDesc" class="form-control" />
+                <span asp-validation-for="FooterTitleDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FooterEmail" class="control-label"></label>
+                <input asp-for="FooterEmail" class="form-control" />
+                <span asp-validation-for="FooterEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

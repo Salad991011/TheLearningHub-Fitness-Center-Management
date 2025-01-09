@@ -1,0 +1,155 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Workout &mdash; Website Home Layout</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <link href="~/HomeDesign/https://fonts.googleapis.com/css?family=Muli:300,400,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="~/HomeDesign/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="~/HomeDesign/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/HomeDesign/css/jquery-ui.css">
+    <link rel="stylesheet" href="~/HomeDesign/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/HomeDesign/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/HomeDesign/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="~/HomeDesign/css/jquery.fancybox.min.css">
+
+    <link rel="stylesheet" href="~/HomeDesign/css/bootstrap-datepicker.css">
+
+    <link rel="stylesheet" href="~/HomeDesign/fonts/flaticon/font/flaticon.css">
+
+    <link rel="stylesheet" href="~/HomeDesign/css/aos.css">
+    <link href="~/HomeDesign/css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="~/HomeDesign/css/style.css">
+
+
+
+</head>
+
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+
+    <div class="site-wrap">
+
+        <div class="site-mobile-menu site-navbar-target">
+            <div class="site-mobile-menu-header">
+                <div class="site-mobile-menu-close mt-3">
+                    <span class="icon-close2 js-menu-toggle"></span>
+                </div>
+            </div>
+            <div class="site-mobile-menu-body"></div>
+        </div>
+
+
+        <header class="site-navbar py-4 js-sticky-header site-navbar-target" role="banner">
+
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <div class="site-logo"><a href="~/HomeDesign/index.html">Workout<span>.</span> </a></div>
+                    <div class="ml-auto">
+                        <nav class="site-navigation position-relative text-right" role="navigation">
+                            <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
+                                <li><a asp-action="index" class="nav-link">Home</a></li>
+                                <li><a asp-action="Classes" class="nav-link">Classes</a></li>
+                                <li><a asp-action="Schedule" class="nav-link">Schedule</a></li>
+                                <li><a asp-action="Login" class="nav-link">SginUp</a></li>
+                            </ul>
+                        </nav>
+                        <a href="~/HomeDesign/#" class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle float-right"><span class="icon-menu h3"></span></a>
+                    </div>
+
+                </div>
+            </div>
+
+        </header>
+</div>
+
+    <div class="site-wrap">
+    <div>
+        @RenderBody()
+    </div>
+    
+    <footer class="footer-section bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3 class="text-white">About Workout</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam facere optio eligendi.</p>
+                </div>
+
+                <div class="col-md-3 ml-auto">
+                    <h3 class="text-white">Links</h3>
+                    <ul class="list-unstyled footer-links">
+                            <li><a asp-action="Index">Home</a></li>
+                            <li><a asp-action="Classes">Classes</a></li>
+                            <li><a asp-action="Schedule">Schedule</a></li>
+                            <li><a asp-action="SignUp">SignUp</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h3 class="text-white">Subscribe</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus, odio beatae accusantium.
+                    </p>
+                    <form action="#">
+                        <div class="d-flex mb-5">
+                            <input type="text" class="form-control rounded-0" placeholder="Email">
+                            <input type="submit" class="btn btn-primary rounded-0" value="Subscribe">
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="row pt-5 mt-5 text-center">
+                <div class="col-md-12">
+                    <div class=" pt-5">
+                        <p>
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script data-cfasync="false" src="~/HomeDesign//cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+                            <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with
+                            <i class="icon-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                                                                                            target="_blank">Colorlib</a>
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+
+
+    </div>
+    <!-- .site-wrap -->
+
+    <script src="~/HomeDesign/js/jquery-3.3.1.min.js"></script>
+    <script src="~/HomeDesign/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="~/HomeDesign/js/jquery-ui.js"></script>
+    <script src="~/HomeDesign/js/popper.min.js"></script>
+    <script src="~/HomeDesign/js/bootstrap.min.js"></script>
+    <script src="~/HomeDesign/js/owl.carousel.min.js"></script>
+    <script src="~/HomeDesign/js/jquery.stellar.min.js"></script>
+    <script src="~/HomeDesign/js/jquery.countdown.min.js"></script>
+    <script src="~/HomeDesign/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/HomeDesign/js/jquery.easing.1.3.js"></script>
+    <script src="~/HomeDesign/js/aos.js"></script>
+    <script src="~/HomeDesign/js/jquery.fancybox.min.js"></script>
+    <script src="~/HomeDesign/js/jquery.sticky.js"></script>
+    <script src="~/HomeDesign/js/jquery.mb.YTPlayer.min.js"></script>
+
+
+
+
+    <script src="~/HomeDesign/js/main.js"></script>
+
+</body>
+</html>
