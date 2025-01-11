@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheLearningHub_Fitness_Center_Management.Models;
 
@@ -14,7 +15,8 @@ public partial class HomePageContent
     public string? BackgroundDesc1 { get; set; }
 
     public string? BackgroundImagePath1 { get; set; }
-
+    [NotMapped]
+    public virtual IFormFile BackgroundImageFile1 { get; set; } 
     public string? CourselTextTitle { get; set; }
 
     public string? CourselDesc { get; set; }
@@ -28,7 +30,8 @@ public partial class HomePageContent
     public string? BackgroundDesc2 { get; set; }
 
     public string? BackgroundImagePath2 { get; set; }
-
+    [NotMapped]
+    public virtual IFormFile BackgroundImageFile2 { get; set; }
     public string? TrainerTitle { get; set; }
 
     public string? TrainerDesc { get; set; }
@@ -38,7 +41,8 @@ public partial class HomePageContent
     public string? ServicesDesc1 { get; set; }
 
     public string? ServicesImagePath2 { get; set; }
-
+    [NotMapped]
+    public virtual IFormFile ServicesImageFile2 { get; set; }
     public string? ServicesDesc2 { get; set; }
 
     public string? FooterTitle { get; set; }

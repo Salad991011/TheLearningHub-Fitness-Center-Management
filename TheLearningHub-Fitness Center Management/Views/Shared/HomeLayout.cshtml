@@ -54,10 +54,19 @@
                     <div class="ml-auto">
                         <nav class="site-navigation position-relative text-right" role="navigation">
                             <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
-                                <li><a asp-action="index" class="nav-link">Home</a></li>
-                                <li><a asp-action="Classes" class="nav-link">Classes</a></li>
-                                <li><a asp-action="Schedule" class="nav-link">Schedule</a></li>
-                                <li><a asp-action="Login" class="nav-link">SginUp</a></li>
+                                <li><a asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
+
+                                @if (Context.Session.GetString("Username") != null)
+                                {
+                                    <li><a asp-controller="Home" asp-action="Schedule" class="nav-link">Schedule</a></li>
+                                    <li><a asp-controller="Home" asp-action="Classes" class="nav-link">Classes</a></li>
+                                    <li><a asp-controller="Auth" asp-action="Logout" class="nav-link">Logout</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-controller="Auth" asp-action="Login" class="nav-link">Login</a></li>
+                                    <li><a asp-controller="Auth" asp-action="Register" class="nav-link">Register</a></li>
+                                }
                             </ul>
                         </nav>
                         <a href="~/HomeDesign/#" class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle float-right"><span class="icon-menu h3"></span></a>

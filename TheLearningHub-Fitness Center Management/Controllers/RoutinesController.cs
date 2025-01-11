@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ using TheLearningHub_Fitness_Center_Management.Models;
 
 namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
+
+    [Authorize]
     public class RoutinesController : Controller
     {
         private readonly ModelContext _context;

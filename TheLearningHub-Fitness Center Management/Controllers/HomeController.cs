@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TheLearningHub_Fitness_Center_Management.Models;
 
@@ -18,26 +19,23 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             return View();
         }
 
-        public IActionResult Schedule()
-        {
-            return View();
-        }
-        public IActionResult Classes()
-        {
-            return View();
-        }
-		public IActionResult Login()
+		[Authorize]
+		public IActionResult Schedule()
 		{
-			return View();
+			return View("~/Views/Home/Schedule.cshtml");
 		}
-        public IActionResult Register()
+
+		[Authorize]
+		public IActionResult Classes()
+		{
+			return View("~/Views/Home/Classes.cshtml");
+		}
+
+		public IActionResult AdminDashboard()
         {
             return View();
         }
-        public IActionResult AdminDashboard()
-        {
-            return View();
-        }
+
         public IActionResult TrainerDashboard()
         {
             return View();

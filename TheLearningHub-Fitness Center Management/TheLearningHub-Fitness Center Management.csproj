@@ -24,6 +24,7 @@
     <Folder Include="Models\" />
     <Folder Include="wwwroot\AdminDesign\" />
     <Folder Include="wwwroot\LoginAndRegisterDesign\" />
+    <Folder Include="wwwroot\Images\" />
     <Folder Include="wwwroot\TrainerPortalDesign\" />
   </ItemGroup>
 

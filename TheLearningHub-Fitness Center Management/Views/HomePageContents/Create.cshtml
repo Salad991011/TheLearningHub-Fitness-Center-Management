@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data  ">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="MainTitle" class="control-label"></label>
@@ -29,9 +29,9 @@
                 <span asp-validation-for="BackgroundDesc1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BackgroundImagePath1" class="control-label"></label>
-                <input asp-for="BackgroundImagePath1" class="form-control" />
-                <span asp-validation-for="BackgroundImagePath1" class="text-danger"></span>
+                <label asp-for="BackgroundImageFile1" class="control-label"></label>
+                <input asp-for="BackgroundImageFile1" class="form-control" />
+                <span asp-validation-for="BackgroundImageFile1" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CourselTextTitle" class="control-label"></label>
@@ -64,9 +64,9 @@
                 <span asp-validation-for="BackgroundDesc2" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BackgroundImagePath2" class="control-label"></label>
-                <input asp-for="BackgroundImagePath2" class="form-control" />
-                <span asp-validation-for="BackgroundImagePath2" class="text-danger"></span>
+                <label asp-for="BackgroundImageFile2" class="control-label"></label>
+                <input asp-for="BackgroundImageFile2" class="form-control" />
+                <span asp-validation-for="BackgroundImageFile2" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TrainerTitle" class="control-label"></label>
@@ -89,9 +89,9 @@
                 <span asp-validation-for="ServicesDesc1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ServicesImagePath2" class="control-label"></label>
-                <input asp-for="ServicesImagePath2" class="form-control" />
-                <span asp-validation-for="ServicesImagePath2" class="text-danger"></span>
+                <label asp-for="ServicesImageFile2" class="control-label"></label>
+                <input asp-for="ServicesImageFile2" class="form-control" />
+                <span asp-validation-for="ServicesImageFile2" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ServicesDesc2" class="control-label"></label>

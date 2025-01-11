@@ -10,7 +10,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" class="table table-striped table-hover">
     <thead>
         <tr>
             <th>
@@ -91,6 +91,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.BackgroundImagePath1)
             </td>
+                        <td>
+                    <img src=@Url.Content("~/Images/" + item.BackgroundImagePath1) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.CourselTextTitle)
             </td>
@@ -112,6 +116,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.BackgroundImagePath2)
             </td>
+                        <td>
+                    <img src=@Url.Content("~/Images/" + item.BackgroundImagePath2) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.TrainerTitle)
             </td>
@@ -127,6 +135,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ServicesImagePath2)
             </td>
+                        <td>
+                    <img src=@Url.Content("~/Images/" + item.ServicesImagePath2) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.ServicesDesc2)
             </td>
@@ -140,10 +152,11 @@
                 @Html.DisplayFor(modelItem => item.FooterEmail)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.HomePageId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.HomePageId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.HomePageId">Delete</a>
-            </td>
+    <a asp-action="Edit" asp-route-id="@item.HomePageId" class="btn btn-warning btn-sm">Edit</a>
+    <a asp-action="Details" asp-route-id="@item.HomePageId" class="btn btn-info btn-sm">Details</a>
+    <a asp-action="Delete" asp-route-id="@item.HomePageId" class="btn btn-danger btn-sm">Delete</a>
+</td>
+
         </tr>
 }
     </tbody>
