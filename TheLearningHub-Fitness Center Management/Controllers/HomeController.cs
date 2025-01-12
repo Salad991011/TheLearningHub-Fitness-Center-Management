@@ -31,10 +31,6 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 			return View("~/Views/Home/Classes.cshtml");
 		}
 
-		public IActionResult AdminDashboard()
-        {
-            return View();
-        }
 
         public IActionResult TrainerDashboard()
         {
