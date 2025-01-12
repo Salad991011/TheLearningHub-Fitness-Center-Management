@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheLearningHub_Fitness_Center_Management.Models;
 
@@ -16,6 +17,8 @@ public partial class User
     public string? PhoneNumber { get; set; }
 
     public string? ImagePath { get; set; }
+    [NotMapped]
+    public virtual IFormFile UsersImageFile { get; set; }
 
     public decimal? LoginId { get; set; }
 

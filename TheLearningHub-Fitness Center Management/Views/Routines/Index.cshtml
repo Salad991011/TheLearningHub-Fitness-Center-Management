@@ -34,13 +34,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Desc)
             </td>
+                <td>
+                    <img src=@Url.Content("~/Images/" + item.ImagePath) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.RoutineId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RoutineId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RoutineId">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.RoutineId" class="btn btn-warning btn-sm">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.RoutineId" class="btn btn-info btn-sm">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.RoutineId" class="btn btn-danger btn-sm">Delete</a>
             </td>
         </tr>
 }

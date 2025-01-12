@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheLearningHub_Fitness_Center_Management.Models;
 
@@ -12,4 +13,7 @@ public partial class Routine
     public string? Desc { get; set; }
 
     public string? ImagePath { get; set; }
+    [NotMapped]
+    public virtual IFormFile RoutineImageFile { get; set; }
+
 }

@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,133 +12,119 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
     public class UsersController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ModelContext _context;
 
-        public UsersController(ModelContext context)
+        public UsersController(ModelContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var modelContext = _context.Users.Include(u => u.Login);
-            return View(await modelContext.ToListAsync());
+            var users = await _context.Users.Include(u => u.Login).ToListAsync();
+            return View(users);
         }
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(decimal? id)
         {
-            if (id == null || _context.Users == null)
-            {
+            if (!id.HasValue)
                 return NotFound();
-            }
 
             var user = await _context.Users
                 .Include(u => u.Login)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+                .FirstOrDefaultAsync(u => u.UserId == id);
 
-            return View(user);
+            return user == null ? NotFound() : View(user);
         }
 
         // GET: Users/Create
         public IActionResult Create()
         {
-            ViewData["LoginId"] = new SelectList(_context.Logins, "LoginId", "LoginId");
+            PopulateLoginDropDownList();
             return View();
         }
 
         // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Fname,Lname,Email,PhoneNumber,ImagePath,LoginId")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,Fname,Lname,Email,PhoneNumber,UsersImageFile,LoginId")] User user)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                PopulateLoginDropDownList(user.LoginId);
+                return View(user);
             }
-            ViewData["LoginId"] = new SelectList(_context.Logins, "LoginId", "LoginId", user.LoginId);
-            return View(user);
+
+            if (user.UsersImageFile != null)
+                user.ImagePath = await SaveImageFile(user.UsersImageFile);
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(decimal? id)
         {
-            if (id == null || _context.Users == null)
-            {
+            if (!id.HasValue)
                 return NotFound();
-            }
 
             var user = await _context.Users.FindAsync(id);
             if (user == null)
-            {
                 return NotFound();
-            }
-            ViewData["LoginId"] = new SelectList(_context.Logins, "LoginId", "LoginId", user.LoginId);
+
+            PopulateLoginDropDownList(user.LoginId);
             return View(user);
         }
 
         // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("UserId,Fname,Lname,Email,PhoneNumber,ImagePath,LoginId")] User user)
+        public async Task<IActionResult> Edit(decimal id, [Bind("UserId,Fname,Lname,Email,PhoneNumber,UsersImageFile,LoginId")] User user)
         {
             if (id != user.UserId)
-            {
                 return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                PopulateLoginDropDownList(user.LoginId);
+                return View(user);
             }
 
-            if (ModelState.IsValid)
+            if (user.UsersImageFile != null)
+                user.ImagePath = await SaveImageFile(user.UsersImageFile);
+
+            try
             {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(user);
+                await _context.SaveChangesAsync();
             }
-            ViewData["LoginId"] = new SelectList(_context.Logins, "LoginId", "LoginId", user.LoginId);
-            return View(user);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.UserId))
+                    return NotFound();
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(decimal? id)
         {
-            if (id == null || _context.Users == null)
-            {
+            if (!id.HasValue)
                 return NotFound();
-            }
 
             var user = await _context.Users
                 .Include(u => u.Login)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+                .FirstOrDefaultAsync(u => u.UserId == id);
 
-            return View(user);
+            return user == null ? NotFound() : View(user);
         }
 
         // POST: Users/Delete/5
@@ -145,23 +132,44 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(decimal id)
         {
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'ModelContext.Users'  is null.");
-            }
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
                 _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(decimal id)
         {
-          return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
+            return _context.Users?.Any(e => e.UserId == id) ?? false;
+        }
+
+        private async Task<string> SaveImageFile(IFormFile imageFile)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string fileName = $"{Guid.NewGuid()}_{imageFile.FileName}";
+            string path = Path.Combine(wwwRootPath, "Images", fileName);
+
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            return fileName;
+        }
+
+        private void PopulateLoginDropDownList(object selectedLogin = null)
+        {
+            var logins = _context.Logins.Select(l => new
+            {
+                l.LoginId,
+                Display = $"{l.LoginId} - {l.UserName}"
+            });
+
+            ViewData["LoginId"] = new SelectList(logins, "LoginId", "Display", selectedLogin);
         }
     }
 }
