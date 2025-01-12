@@ -32,12 +32,8 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.BackgroundImagePath1)
         </dt>
-        <dd>
+        <dd class="col-sm-10">
             <img src=@Url.Content("~/Images/" + Model.BackgroundImagePath1) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
-        </dd>
-
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundImagePath1)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CourselTextTitle)
@@ -75,15 +71,13 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.BackgroundDesc2)
         </dd>
-        <dt class = "col-sm-2">
+          <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.BackgroundImagePath2)
         </dt>
-        <dd>
+        <dd class="col-sm-10">
             <img src=@Url.Content("~/Images/" + Model.BackgroundImagePath2) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
         </dd>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundImagePath2)
-        </dd>
+       
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TrainerTitle)
         </dt>
@@ -108,14 +102,11 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ServicesDesc1)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ServicesImagePath2)
         </dt>
-        <dd>
+        <dd class="col-sm-10">
             <img src=@Url.Content("~/Images/" + Model.ServicesImagePath2) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
-        </dd>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServicesImagePath2)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ServicesDesc2)
@@ -144,6 +135,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.HomePageId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.HomePageId" class="btn btn-warning btn-sm">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
     [Authorize]
     public class ClassPageContentsController : Controller
     {
-        private readonly ModelContext _context;
+		private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly ModelContext _context;
 
-        public ClassPageContentsController(ModelContext context)
+        public ClassPageContentsController(ModelContext context, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+			_webHostEnvironment = webHostEnvironment;
+			_context = context;
         }
 
         // GET: ClassPageContents
@@ -60,11 +63,23 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClassPageId,BackgroundTitle1,BackgroundDesc1,BackgroundImagePath1,ClassesTitle,ClassesDesc")] ClassPageContent classPageContent)
+        public async Task<IActionResult> Create([Bind("ClassPageId,BackgroundTitle1,BackgroundDesc1,BackgroundImageFile1,ClassesTitle,ClassesDesc")] ClassPageContent classPageContent)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(classPageContent);
+				if (classPageContent.BackgroundImageFile1 != null)
+				{
+					string wwwRootPath = _webHostEnvironment.WebRootPath;
+					string fileName = Guid.NewGuid().ToString() + '_' + classPageContent.BackgroundImageFile1.FileName;
+					string path = Path.Combine(wwwRootPath + "/Images/", fileName);
+					using (var fileStream = new FileStream(path, FileMode.Create))
+					{
+						await classPageContent.BackgroundImageFile1.CopyToAsync(fileStream);
+					}
+					classPageContent.BackgroundImagePath1 = fileName;
+
+				}
+				_context.Add(classPageContent);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -101,6 +116,18 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             if (ModelState.IsValid)
             {
+                if (classPageContent.BackgroundImageFile1 != null)
+                {
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string fileName = Guid.NewGuid().ToString() + '_' + classPageContent.BackgroundImageFile1.FileName;
+                    string path = Path.Combine(wwwRootPath + "/Images/", fileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await classPageContent.BackgroundImageFile1.CopyToAsync(fileStream);
+                    }
+                    classPageContent.BackgroundImagePath1 = fileName;
+
+                }
                 try
                 {
                     _context.Update(classPageContent);

@@ -11,10 +11,12 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
     public class PaidplansController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ModelContext _context;
 
-        public PaidplansController(ModelContext context)
+        public PaidplansController(ModelContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _webHostEnvironment = webHostEnvironment;
             _context = context;
         }
 
@@ -56,10 +58,22 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlanId,PlanTitle,PlanPrice,PlanDesc,ImagePath,UserId")] Paidplan paidplan)
+        public async Task<IActionResult> Create([Bind("PlanId,PlanTitle,PlanPrice,PlanDesc,PlanImageFile,UserId")] Paidplan paidplan)
         {
             if (ModelState.IsValid)
             {
+                if (paidplan.PlanImageFile != null)
+                {
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string fileName = Guid.NewGuid().ToString() + '_' + paidplan.PlanImageFile.FileName;
+                    string path = Path.Combine(wwwRootPath + "/Images/", fileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await paidplan.PlanImageFile.CopyToAsync(fileStream);
+                    }
+                    paidplan.ImagePath = fileName;
+
+                }
                 _context.Add(paidplan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -94,11 +108,24 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         {
             if (id != paidplan.PlanId)
             {
+
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                if (paidplan.PlanImageFile != null)
+                {
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string fileName = Guid.NewGuid().ToString() + '_' + paidplan.PlanImageFile.FileName;
+                    string path = Path.Combine(wwwRootPath + "/Images/", fileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await paidplan.PlanImageFile.CopyToAsync(fileStream);
+                    }
+                    paidplan.ImagePath = fileName;
+
+                }
                 try
                 {
                     _context.Update(paidplan);
