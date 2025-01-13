@@ -14,5 +14,5 @@ public partial class Service
 
     public string? ImagePath { get; set; }
     [NotMapped]
-    public virtual IFormFile ServicesImageFile { get; set; }
+    public IFormFile? ServicesImageFile { get; set; }
 }

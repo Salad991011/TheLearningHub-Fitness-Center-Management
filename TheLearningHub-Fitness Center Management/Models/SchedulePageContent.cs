@@ -14,8 +14,7 @@ public partial class SchedulePageContent
 
     public string? BackgroundImagePath1 { get; set; }
     [NotMapped]
-    public virtual IFormFile ScheduleImageFile { get; set; }
-
+    public IFormFile? ScheduleImageFile { get; set; }
 
     public string? ScheduleTitle { get; set; }
 

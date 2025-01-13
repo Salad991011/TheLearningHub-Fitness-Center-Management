@@ -15,7 +15,10 @@ public partial class ModelContext : DbContext
     {
     }
 
+    public virtual DbSet<Class> Classes { get; set; }
+
     public virtual DbSet<ClassPageContent> ClassPageContents { get; set; }
+
 
     public virtual DbSet<Contactu> Contactus { get; set; }
 
@@ -30,6 +33,8 @@ public partial class ModelContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Routine> Routines { get; set; }
+
+    public virtual DbSet<Schedule> Schedules { get; set; }
 
     public virtual DbSet<SchedulePageContent> SchedulePageContents { get; set; }
 
@@ -50,6 +55,44 @@ public partial class ModelContext : DbContext
         modelBuilder
             .HasDefaultSchema("C##SALEH")
             .UseCollation("USING_NLS_COMP");
+
+        modelBuilder.Entity<Class>(entity =>
+        {
+            entity.HasKey(e => e.Classid).HasName("SYS_C008427");
+
+            entity.ToTable("CLASSES");
+
+            entity.Property(e => e.Classid)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("CLASSID");
+            entity.Property(e => e.Classdate)
+                .HasColumnType("DATE")
+                .HasColumnName("CLASSDATE");
+            entity.Property(e => e.Classdesc)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("CLASSDESC");
+            entity.Property(e => e.Classname)
+                .HasMaxLength(55)
+                .IsUnicode(false)
+                .HasColumnName("CLASSNAME");
+            entity.Property(e => e.Classtime)
+                .HasPrecision(6)
+                .HasColumnName("CLASSTIME");
+            entity.Property(e => e.Imagepath)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("IMAGEPATH");
+            entity.Property(e => e.Userid)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("USERID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Classes)
+                .HasForeignKey(d => d.Userid)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("U123");
+        });
 
         modelBuilder.Entity<ClassPageContent>(entity =>
         {
@@ -82,6 +125,8 @@ public partial class ModelContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("CLASSES_TITLE");
         });
+
+        
 
         modelBuilder.Entity<Contactu>(entity =>
         {
@@ -330,6 +375,44 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.RoutineTime)
                 .HasColumnType("DATE")
                 .HasColumnName("ROUTINE_TIME");
+        });
+
+        modelBuilder.Entity<Schedule>(entity =>
+        {
+            entity.HasKey(e => e.ScheduleId).HasName("SYS_C008423");
+
+            entity.ToTable("SCHEDULE");
+
+            entity.Property(e => e.ScheduleId)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("SCHEDULE_ID");
+            entity.Property(e => e.Day)
+                .HasColumnType("DATE")
+                .HasColumnName("DAY_");
+            entity.Property(e => e.ImagePath)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("IMAGE_PATH");
+            entity.Property(e => e.PlanId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("PLAN_ID");
+            entity.Property(e => e.RoutineId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("ROUTINE_ID");
+            entity.Property(e => e.Time)
+                .HasPrecision(6)
+                .HasColumnName("TIME_");
+
+            entity.HasOne(d => d.Plan).WithMany(p => p.Schedules)
+                .HasForeignKey(d => d.PlanId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_SCHEDULE_PLAN_ID");
+
+            entity.HasOne(d => d.Routine).WithMany(p => p.Schedules)
+                .HasForeignKey(d => d.RoutineId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ROUTINE_PLAN_ID");
         });
 
         modelBuilder.Entity<SchedulePageContent>(entity =>

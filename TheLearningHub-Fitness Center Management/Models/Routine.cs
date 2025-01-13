@@ -14,6 +14,7 @@ public partial class Routine
 
     public string? ImagePath { get; set; }
     [NotMapped]
-    public virtual IFormFile RoutineImageFile { get; set; }
+    public IFormFile? RoutineImageFile { get; set; }
 
+    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }

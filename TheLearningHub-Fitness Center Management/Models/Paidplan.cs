@@ -16,10 +16,11 @@ public partial class Paidplan
 
     public string? ImagePath { get; set; }
     [NotMapped]
-    public virtual IFormFile PlanImageFile { get; set; }
-
+    public IFormFile? PlanImageFile { get; set; }
 
     public decimal? UserId { get; set; }
+
+    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
     public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 

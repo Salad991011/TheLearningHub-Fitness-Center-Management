@@ -18,9 +18,12 @@ public partial class User
 
     public string? ImagePath { get; set; }
     [NotMapped]
-    public virtual IFormFile UsersImageFile { get; set; }
+    public IFormFile? UsersImageFile { get; set; }
 
     public decimal? LoginId { get; set; }
+
+    public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
+
 
     public virtual Login? Login { get; set; }
 

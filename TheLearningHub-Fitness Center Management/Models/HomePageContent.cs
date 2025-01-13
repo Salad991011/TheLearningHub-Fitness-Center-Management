@@ -16,7 +16,8 @@ public partial class HomePageContent
 
     public string? BackgroundImagePath1 { get; set; }
     [NotMapped]
-    public virtual IFormFile BackgroundImageFile1 { get; set; } 
+    public IFormFile? BackgroundImageFile1 { get; set; }
+
     public string? CourselTextTitle { get; set; }
 
     public string? CourselDesc { get; set; }
@@ -31,7 +32,8 @@ public partial class HomePageContent
 
     public string? BackgroundImagePath2 { get; set; }
     [NotMapped]
-    public virtual IFormFile BackgroundImageFile2 { get; set; }
+    public IFormFile? BackgroundImageFile2 { get; set; }
+
     public string? TrainerTitle { get; set; }
 
     public string? TrainerDesc { get; set; }
@@ -42,7 +44,8 @@ public partial class HomePageContent
 
     public string? ServicesImagePath2 { get; set; }
     [NotMapped]
-    public virtual IFormFile ServicesImageFile2 { get; set; }
+    public IFormFile? ServicesImageFile2 { get; set; }
+
     public string? ServicesDesc2 { get; set; }
 
     public string? FooterTitle { get; set; }
