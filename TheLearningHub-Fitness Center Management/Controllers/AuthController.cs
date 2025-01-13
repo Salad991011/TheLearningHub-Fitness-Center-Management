@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using TheLearningHub_Fitness_Center_Management.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
@@ -29,8 +30,9 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             if (user != null)
             {
-                HttpContext.Session.SetString("Username", user.UserName);
-                HttpContext.Session.SetInt32("RoleId", (int)user.RoleId.GetValueOrDefault());
+                HttpContext.Session.SetInt32("LoginId", (int)user.LoginId); // Store LoginId as an int
+                HttpContext.Session.SetInt32("RoleId", (int)user.RoleId.GetValueOrDefault()); // Store RoleId
+                HttpContext.Session.SetString("Username", user.UserName); // Store Username
 
                 var claims = new List<Claim>
                 {
