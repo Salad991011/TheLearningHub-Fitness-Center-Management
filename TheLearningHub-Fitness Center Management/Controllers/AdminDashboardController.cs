@@ -153,12 +153,12 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 using (var smtpClient = new SmtpClient("smtp.office365.com"))
                 {
                     smtpClient.Port = 587; // Replace with your SMTP port
-                    smtpClient.Credentials = new NetworkCredential("saladforyra@saladsc.onmicrosoft.com", "Salad1234"); // Replace with your email credentials
+                    smtpClient.Credentials = new NetworkCredential("Saladforyra@Saladsc.onmicrosoft.com", "Salad1234"); // Replace with your email credentials
                     smtpClient.EnableSsl = true;
 
                     var mailMessage = new MailMessage
                     {
-                        From = new MailAddress("saladforyra@saladsc.onmicrosoft.com", "Admin"),
+                        From = new MailAddress("Saladforyra@Saladsc.onmicrosoft.com", "Admin"),
                         Subject = subject,
                         Body = body,
                         IsBodyHtml = false,
