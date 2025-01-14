@@ -8,9 +8,9 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
-<table class="table">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>
@@ -29,38 +29,45 @@
                 @Html.DisplayNameFor(model => model.ImagePath)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Login)
+                Login ID
             </th>
-            <th></th>
+            <th>
+                Role
+            </th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
-                    <img src=@Url.Content("~/Images/" + item.ImagePath) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                    @Html.DisplayFor(modelItem => item.Fname)
                 </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Login.LoginId)
-            </td>
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-warning btn-sm">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info btn-sm">Details</a> |
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    <img src="@Url.Content("~/Images/" + item.ImagePath)" asp-append-version="true" style="border-radius: 20%;" width="100" height="100" />
+                </td>
+                <td>
+                    @item.Login?.LoginId
+                </td>
+                <td>
+                    @item.Role?.RoleName
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info btn-sm">Details</a>
                     <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

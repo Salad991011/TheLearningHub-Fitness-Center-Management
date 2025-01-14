@@ -17,15 +17,20 @@ public partial class User
     public string? PhoneNumber { get; set; }
 
     public string? ImagePath { get; set; }
+
     [NotMapped]
     public IFormFile? UsersImageFile { get; set; }
 
     public decimal? LoginId { get; set; }
 
-    public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
+    public decimal RoleId { get; set; } // Ensure this is named correctly in User.cs
 
+
+    public virtual Role? Role { get; set; }
 
     public virtual Login? Login { get; set; }
+
+    public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 
     public virtual ICollection<Paidplan> Paidplans { get; set; } = new List<Paidplan>();
 

@@ -18,6 +18,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
         public IActionResult Login(string returnUrl = "/")
         {
+
             ViewData["ReturnUrl"] = returnUrl;
             return View("~/Views/LoginAndRegister/Login.cshtml");
         }
@@ -30,15 +31,24 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             if (user != null)
             {
-                HttpContext.Session.SetInt32("LoginId", (int)user.LoginId); // Store LoginId as an int
+                var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.LoginId == user.LoginId);
+
+                if (userEntity == null)
+                {
+                    TempData["Error"] = "User details not found for this login.";
+                    return View("~/Views/LoginAndRegister/Login.cshtml");
+                }
+
+                HttpContext.Session.SetInt32("LoginId", (int)user.LoginId); // Store LoginId
                 HttpContext.Session.SetInt32("RoleId", (int)user.RoleId.GetValueOrDefault()); // Store RoleId
+                HttpContext.Session.SetInt32("UserId", (int)userEntity.UserId); // Store UserId
                 HttpContext.Session.SetString("Username", user.UserName); // Store Username
 
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, user.RoleId.ToString())
-                };
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Role, user.RoleId.ToString())
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
                 await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
@@ -48,7 +58,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                     case 1: // Admin
                         return RedirectToAction("AdminDashboard", "AdminDashboard");
                     case 3: // Trainer
-                        return RedirectToAction("TrainerDashboard", "Home");
+                        return RedirectToAction("TrainerDashboard", "TrainerDashboard");
                     case 2: // User
                         return RedirectToAction("Index", "Home");
                     default:
@@ -61,6 +71,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View("~/Views/LoginAndRegister/Login.cshtml");
         }
+
 
         public IActionResult Register()
         {

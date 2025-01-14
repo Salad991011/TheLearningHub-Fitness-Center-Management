@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-
-using MimeKit;
-using MimeKit.Text;
-using TheLearningHub_Fitness_Center_Management.Models;
 using System.Net.Mail;
 using System.Net;
-
+using TheLearningHub_Fitness_Center_Management.Models;
 
 namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
@@ -23,6 +19,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
         public IActionResult AdminDashboard()
         {
+            // Fetch statistics for dashboard
             var activeMemberships = _context.Subscriptions.Count(s =>
                 s.DateFrom.HasValue &&
                 s.DateTo.HasValue &&
@@ -31,47 +28,56 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             var pendingClasses = _context.Classes
                 .Include(c => c.User)
+                .ThenInclude(u => u.Role) // Include Role for debugging/insight
                 .Where(c => c.ISAPPROVED == false)
                 .ToList();
 
             var classRequests = _context.Classes
                 .Include(c => c.User)
+                .ThenInclude(u => u.Role) // Include Role for debugging/insight
                 .Where(c => c.APPROVALSTATUS == "Approved" || c.APPROVALSTATUS == "Rejected")
                 .ToList();
 
+            // Pass data to the view
             ViewBag.PendingClasses = pendingClasses;
             ViewBag.ClassRequests = classRequests;
             ViewBag.ActiveMemberships = activeMemberships;
             ViewBag.TotalSales = _context.Paidplans.Sum(p => p.PlanPrice);
             ViewBag.ActiveMembers = _context.Users.Count();
+
             return View("~/Views/AdminDashboard/AdminDashboard.cshtml");
         }
 
         [HttpGet]
         public IActionResult Profile()
         {
-            // Fetch admin user details based on session or other mechanism
             var adminId = HttpContext.Session.GetInt32("UserId");
             if (adminId == null)
             {
+                Console.WriteLine("UserId in session is null.");
                 TempData["ErrorMessage"] = "Admin not logged in.";
                 return RedirectToAction("Login", "Auth");
             }
 
-            var admin = _context.Users.FirstOrDefault(u => u.UserId == adminId && u.RoleId == 1);
+            var admin = _context.Users
+                .Include(u => u.Role) // Include the Role navigation property
+                .FirstOrDefault(u => u.UserId == adminId && u.RoleId == 1); // Ensure RoleId == 1 (Admin role)
+
             if (admin == null)
             {
+                Console.WriteLine($"No admin found with UserId: {adminId}");
                 TempData["ErrorMessage"] = "Admin profile not found.";
                 return RedirectToAction("AdminDashboard");
             }
 
+            Console.WriteLine($"Admin profile loaded successfully for UserId: {adminId}");
             return View("~/Views/AdminDashboard/Profile.cshtml", admin);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ApproveClass(decimal ClassId)
         {
-            // Fetch the pending class details
             var pendingClass = await _context.Classes
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.Classid == ClassId);
@@ -80,25 +86,20 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             {
                 try
                 {
-                    // Attempt to send an approval email
                     await SendEmailAsync(
                         pendingClass.User.Email,
                         "Class Approval Notification",
                         $"Dear {pendingClass.User.Fname},\n\nYour class '{pendingClass.Classname}' has been approved and added to the schedule."
                     );
 
-                    // If email is sent successfully, update the class approval details
                     pendingClass.APPROVALSTATUS = "Approved";
                     pendingClass.ISAPPROVED = true;
 
-                    // Save changes to the database
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    // If email fails, log the error and keep the request pending
                     Console.WriteLine($"Failed to send email for class approval: {ex.Message}");
-
                     TempData["ErrorMessage"] = "Failed to send approval email. Please refresh and try again.";
                     return RedirectToAction("AdminDashboard");
                 }
@@ -110,7 +111,6 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [HttpPost]
         public async Task<IActionResult> RejectClass(decimal ClassId)
         {
-            // Fetch the pending class details
             var pendingClass = await _context.Classes
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.Classid == ClassId);
@@ -119,25 +119,20 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             {
                 try
                 {
-                    // Attempt to send a rejection email
                     await SendEmailAsync(
                         pendingClass.User.Email,
                         "Class Rejection Notification",
                         $"Dear {pendingClass.User.Fname},\n\nUnfortunately, your class '{pendingClass.Classname}' has been rejected."
                     );
 
-                    // If email is sent successfully, update the class rejection details
                     pendingClass.APPROVALSTATUS = "Rejected";
                     pendingClass.ISAPPROVED = false;
 
-                    // Save changes to the database
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    // If email fails, log the error and keep the request pending
                     Console.WriteLine($"Failed to send email for class rejection: {ex.Message}");
-
                     TempData["ErrorMessage"] = "Failed to send rejection email. Please refresh and try again.";
                     return RedirectToAction("AdminDashboard");
                 }
@@ -167,17 +162,14 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             }
         }
 
-
         [HttpPost]
         public async Task<IActionResult> ClearHistory()
         {
             try
             {
-                // Fetch all approved or rejected classes
                 var classRequests = _context.Classes
                     .Where(c => c.APPROVALSTATUS == "Approved" || c.APPROVALSTATUS == "Rejected");
 
-                // Remove the classes from the database
                 _context.Classes.RemoveRange(classRequests);
                 await _context.SaveChangesAsync();
 
@@ -185,20 +177,11 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             }
             catch (Exception ex)
             {
-                // Log error and show message if clearing fails
                 Console.WriteLine($"Failed to clear history: {ex.Message}");
                 TempData["ErrorMessage"] = "Failed to clear history. Please try again.";
             }
 
             return RedirectToAction("AdminDashboard");
         }
-
-
-
-
-
     }
 }
-
-
-

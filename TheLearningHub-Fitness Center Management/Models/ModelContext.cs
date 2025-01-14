@@ -577,12 +577,21 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PHONE_NUMBER");
+            entity.Property(e => e.RoleId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("ROLE_ID");
 
             entity.HasOne(d => d.Login).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LoginId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_LOGIN_ID");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ROLE_ID_USERS");
         });
+
 
         OnModelCreatingPartial(modelBuilder);
     }
