@@ -20,7 +20,8 @@ public partial class Class
     [NotMapped]
     public IFormFile? ClassImageFile { get; set; }
     public string? APPROVALSTATUS { get; set; }
-    public decimal ISAPPROVED { get; set; }
+
+    public bool ISAPPROVED { get; set; }
 
     public decimal? Userid { get; set; }
 

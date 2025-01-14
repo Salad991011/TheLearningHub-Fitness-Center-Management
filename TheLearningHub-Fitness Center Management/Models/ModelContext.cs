@@ -85,8 +85,10 @@ public partial class ModelContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("IMAGEPATH");
             entity.Property(e => e.ISAPPROVED)
-                .HasColumnType("NUMBER(1)")
-                .HasColumnName("ISAPPROVED");
+                    .HasColumnType("NUMBER(1)")
+                    .HasDefaultValue(0) // Default value: Not approved
+                    .HasColumnName("ISAPPROVED");
+
             entity.Property(e => e.Userid)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("USERID");

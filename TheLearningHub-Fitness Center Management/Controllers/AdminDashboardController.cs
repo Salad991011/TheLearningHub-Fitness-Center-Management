@@ -1,6 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+
+using MimeKit;
+using MimeKit.Text;
 using TheLearningHub_Fitness_Center_Management.Models;
+using System.Net.Mail;
+using System.Net;
+
 
 namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
@@ -22,14 +29,13 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 s.DateTo.HasValue &&
                 s.DateFrom <= DateTime.Now &&
                 s.DateTo >= DateTime.Now);
-            /*
+
             var pendingClasses = _context.Classes
-        .Where(c => c.ApprovalStatus == "Pending") // Update this condition based on your table structure
-        .ToList();
+                .Include(c => c.User) // Include related User data
+                .Where(c => !c.ISAPPROVED) // Fetch only pending classes
+                .ToList();
 
             ViewBag.PendingClasses = pendingClasses;
-            */
-
             ViewBag.ActiveMemberships = activeMemberships;
             ViewBag.TotalSales = _context.Paidplans.Sum(p => p.PlanPrice); // Assuming PaidPlans have a Price field
             ViewBag.ActiveMembers = _context.Users.Count();
@@ -88,9 +94,96 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             return View("~/Views/AdminDashboard/AdminDashboard.cshtml");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ApproveClass(decimal ClassId)
+        {
+            // Include both User and Login data in the query
+            var pendingClass = await _context.Classes
+                .Include(c => c.User)
+                .ThenInclude(u => u.Login)
+                .FirstOrDefaultAsync(c => c.Classid == ClassId);
+
+            if (pendingClass != null && pendingClass.User != null && pendingClass.User.Login != null && pendingClass.User.Login.RoleId == 3) // Verifying trainer's RoleId
+            {
+                pendingClass.APPROVALSTATUS = "Approved";
+                await _context.SaveChangesAsync();
+
+                // Send approval email to the trainer
+                await SendEmailAsync(
+                    pendingClass.User.Email,
+                    "Class Approval Notification",
+                    $"Dear {pendingClass.User.Fname},\n\nYour class '{pendingClass.Classname}' has been approved by the admin."
+                );
+            }
+
+            return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectClass(decimal ClassId)
+        {
+            // Include both User and Login data in the query
+            var pendingClass = await _context.Classes
+                .Include(c => c.User)
+                .ThenInclude(u => u.Login)
+                .FirstOrDefaultAsync(c => c.Classid == ClassId);
+
+            if (pendingClass != null && pendingClass.User != null && pendingClass.User.Login != null && pendingClass.User.Login.RoleId == 3) // Verifying trainer's RoleId
+            {
+                pendingClass.APPROVALSTATUS = "Rejected";
+                await _context.SaveChangesAsync();
+
+                // Send rejection email to the trainer
+                await SendEmailAsync(
+                    pendingClass.User.Email,
+                    "Class Rejection Notification",
+                    $"Dear {pendingClass.User.Fname},\n\nUnfortunately, your class '{pendingClass.Classname}' has been rejected by the admin."
+                );
+            }
+
+            return RedirectToAction("AdminDashboard");
+        }
+
+
+        private async Task SendEmailAsync(string recipientEmail, string subject, string body)
+        {
+            try
+            {
+                // Assuming you are using Microsoft.AspNetCore.Identity.UI.Services or similar email service
+                using (var smtpClient = new SmtpClient("smtp.office365.com"))
+                {
+                    smtpClient.Port = 587; // Replace with your SMTP port
+                    smtpClient.Credentials = new NetworkCredential("saladforyra@saladsc.onmicrosoft.com", "Salad1234"); // Replace with your email credentials
+                    smtpClient.EnableSsl = true;
+
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress("saladforyra@saladsc.onmicrosoft.com", "Admin"),
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = false,
+                    };
+                    mailMessage.To.Add(recipientEmail);
+
+                    await smtpClient.SendMailAsync(mailMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the email sending failure
+                Console.WriteLine($"Failed to send email: {ex.Message}");
+            }
+        }
+
     }
 
 
 
 
+
+
+
 }
+
+
+
