@@ -84,9 +84,16 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("IMAGEPATH");
+            entity.Property(e => e.ISAPPROVED)
+                .HasColumnType("NUMBER(1)")
+                .HasColumnName("ISAPPROVED");
             entity.Property(e => e.Userid)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("USERID");
+            entity.Property(e => e.APPROVALSTATUS)
+               .HasMaxLength(50)
+               .IsUnicode(false)
+               .HasColumnName("APPROVALSTATUS");
 
             entity.HasOne(d => d.User).WithMany(p => p.Classes)
                 .HasForeignKey(d => d.Userid)
