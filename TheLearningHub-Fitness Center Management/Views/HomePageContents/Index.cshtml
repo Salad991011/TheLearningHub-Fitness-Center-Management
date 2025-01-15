@@ -8,147 +8,73 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table" class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MainTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BackgroundTitle1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BackgroundDesc1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BackgroundImagePath1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourselTextTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourselDesc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourselItemsTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourselItemsDesc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BackgroundTitle2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BackgroundDesc2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BackgroundImagePath2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrainerTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrainerDesc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServicesTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServicesDesc1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServicesImagePath2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServicesDesc2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FooterTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FooterTitleDesc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FooterEmail)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MainTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BackgroundTitle1)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BackgroundDesc1)
-            </td>
-                        <td>
-                    <img src=@Url.Content("~/Images/" + item.BackgroundImagePath1) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
-                </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.CourselTextTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourselDesc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourselItemsTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourselItemsDesc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BackgroundTitle2)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BackgroundDesc2)
-            </td>
-                        <td>
-                    <img src=@Url.Content("~/Images/" + item.BackgroundImagePath2) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
-                </td>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.TrainerTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrainerDesc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServicesTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServicesDesc1)
-            </td>
-                        <td>
-                    <img src=@Url.Content("~/Images/" + item.ServicesImagePath2) asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
-                </td>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.ServicesDesc2)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FooterTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FooterTitleDesc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FooterEmail)
-            </td>
-            <td>
-    <a asp-action="Edit" asp-route-id="@item.HomePageId" class="btn btn-warning btn-sm">Edit</a>
-    <a asp-action="Details" asp-route-id="@item.HomePageId" class="btn btn-info btn-sm">Details</a>
-    <a asp-action="Delete" asp-route-id="@item.HomePageId" class="btn btn-danger btn-sm">Delete</a>
-</td>
-
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.MainTitle)</th>
+                <th>@Html.DisplayNameFor(model => model.BackgroundTitle1)</th>
+                <th>@Html.DisplayNameFor(model => model.BackgroundDesc1)</th>
+                <th>@Html.DisplayNameFor(model => model.BackgroundImagePath1)</th>
+                <th>@Html.DisplayNameFor(model => model.CourselTextTitle)</th>
+                <th>@Html.DisplayNameFor(model => model.CourselDesc)</th>
+                <th>@Html.DisplayNameFor(model => model.CourselItemsTitle)</th>
+                <th>@Html.DisplayNameFor(model => model.CourselItemsDesc)</th>
+                <th>@Html.DisplayNameFor(model => model.BackgroundTitle2)</th>
+                <th>@Html.DisplayNameFor(model => model.BackgroundDesc2)</th>
+                <th>@Html.DisplayNameFor(model => model.BackgroundImagePath2)</th>
+                <th>@Html.DisplayNameFor(model => model.TrainerTitle)</th>
+                <th>@Html.DisplayNameFor(model => model.TrainerDesc)</th>
+                <th>@Html.DisplayNameFor(model => model.ServicesTitle)</th>
+                <th>@Html.DisplayNameFor(model => model.ServicesDesc1)</th>
+                <th>@Html.DisplayNameFor(model => model.ServicesImagePath2)</th>
+                <th>@Html.DisplayNameFor(model => model.ServicesDesc2)</th>
+                <th>@Html.DisplayNameFor(model => model.FooterTitle)</th>
+                <th>@Html.DisplayNameFor(model => model.FooterTitleDesc)</th>
+                <th>@Html.DisplayNameFor(model => model.FooterEmail)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.MainTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BackgroundTitle1)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BackgroundDesc1)</td>
+                    <td>
+                        <img src="@Url.Content("~/Images/" + item.BackgroundImagePath1)" asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.CourselTextTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CourselDesc)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CourselItemsTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CourselItemsDesc)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BackgroundTitle2)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BackgroundDesc2)</td>
+                    <td>
+                        <img src="@Url.Content("~/Images/" + item.BackgroundImagePath2)" asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.TrainerTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TrainerDesc)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ServicesTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ServicesDesc1)</td>
+                    <td>
+                        <img src="@Url.Content("~/Images/" + item.ServicesImagePath2)" asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ServicesDesc2)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FooterTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FooterTitleDesc)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FooterEmail)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.HomePageId" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.HomePageId" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.HomePageId" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

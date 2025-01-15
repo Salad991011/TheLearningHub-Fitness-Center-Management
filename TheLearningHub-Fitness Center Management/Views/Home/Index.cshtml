@@ -1,27 +1,64 @@
 ﻿@{
     Layout = "~/Views/Shared/HomeLayout.cshtml";
     ViewData["Title"] = "Index";
+    
+    var BackgroundImagePath1 = ViewBag.BackgroundImagePath1;
+    
+    var BackgroundImagePath2 = ViewBag.BackgroundImagePath2;
+    
+    var ServiceImagePath2 = ViewBag.ServiceImagePath2;
+
+    var BACKGROUND_TITLE1 = ViewBag.BACKGROUND_TITLE1;
+    
+    var BACKGROUND_DESC1 = ViewBag.BACKGROUND_DESC1;
+
+    var COURSEL_TEXT_TITLE = ViewBag.COURSEL_TEXT_TITLE;
+
+    var COURSEL_DESC = ViewBag.COURSEL_DESC;
+
+    var COURSEL_ITEMS_TITLE = ViewBag.COURSEL_ITEMS_TITLE;
+
+    var COURSEL_ITEMS_DESC = ViewBag.COURSEL_ITEMS_DESC;
+
+    var BACKGROUND_TITLE2 = ViewBag.BACKGROUND_TITLE2;
+
+    var BACKGROUND_DESC2 = ViewBag.BACKGROUND_DESC2;
+
+    var TRAINER_TITLE = ViewBag.TRAINER_TITLE;
+
+    var TRAINER_DESC = ViewBag.TRAINER_DESC;
+
+    var SERVICES_TITLE = ViewBag.SERVICES_TITLE;
+
+    var SERVICES_DESC1 = ViewBag.SERVICES_DESC1;
+
+    var SERVICES_DESC2 = ViewBag.SERVICES_DESC2;
+
 }
-        @*Change video here admin can upload video in home*@
-        <a id="bgndVideo" class="player"
-           data-property="{videoURL:'https://www.youtube.com/watch?v=3P6bEAlW-Vw',showYTLogo:false, showAnnotations: false, showControls: false, cc_load_policy: false, containment:'#home-section',autoPlay:true, mute:true, startAt:255, stopAt: 271, opacity:1}">
-        </a>
+<div id="homeSection"
+     style="background-image: url('@Url.Content("~/Images/" + (string.IsNullOrEmpty(ViewBag.BackgroundImagePath1) ? "default.jpg" : ViewBag.BackgroundImagePath1))');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 
-        <div class="intro-section" id="home-section" style="background-color: #ccc;">
-            <div class="container">
-
-                <div class="row align-items-center">
-                    <div class="col-lg-12 mx-auto text-center" data-aos="fade-up">
-                        <h1 class="mb-3">Fitness Help Me Feel Better</h1>
-                        <p class="lead mx-auto desc mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores nisi minus perspiciatis optio, id deserunt.</p>
-                        <p class="text-center">
-                            <a href="~/HomeDesign/#" class="btn btn-outline-white py-3 px-5">Get Started</a>
-                        </p>
-                    </div>
-                </div>
-
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 mx-auto text-center" data-aos="fade-up">
+                <h1 class="mb-3">@BACKGROUND_TITLE1</h1>
+                <p class="lead mx-auto desc mb-5">@BACKGROUND_DESC1</p>
+                <p class="text-center">
+                    <a href="~/HomeDesign/#" class="btn btn-outline-white py-3 px-5">Get Started</a>
+                </p>
             </div>
         </div>
+    </div>
+</div>
 
 
         <div class="site-section">
@@ -30,72 +67,21 @@
                 <div class="row justify-content-center text-center mb-5">
                     <div class="col-md-8 section-heading">
                         <span class="subheading">Stay Healthy</span>
-                        <h2 class="heading mb-3">Setup Your Body With Workout</h2>
+                <h2 class="heading mb-3">@COURSEL_TEXT_TITLE</h2>
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, mollitia amet nihil!
-                            Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
+                            @COURSEL_DESC
                         </p>
                     </div>
                 </div>
                 @*Change Slider here admin can upload Slider images in home*@
                 <!-- Slider -->
-                <div class="owl-carousel nonloop-block-14 block-14" data-aos="fade">
-                    <div class="slide">
-                        <div class="ftco-feature-1">
-                            <span class="icon flaticon-fit"></span>
-                            <div class="ftco-feature-1-text">
-                                <h2>Consectuetur elit</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis quo, cumque fuga.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slide">
-                        <div class="ftco-feature-1">
-                            <span class="icon flaticon-gym-1"></span>
-                            <div class="ftco-feature-1-text">
-                                <h2>Veritatis quo</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto quasi quia iure unde perferendis!</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slide">
-                        <div class="ftco-feature-1">
-                            <span class="icon flaticon-gym"></span>
-                            <div class="ftco-feature-1-text">
-                                <h2>Perspiciatis modi</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi tempora nostrum, perspiciatis modi eaque!</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slide">
-                        <div class="ftco-feature-1">
-                            <span class="icon flaticon-vegetables"></span>
-                            <div class="ftco-feature-1-text">
-                                <h2>Magnam ab eius</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus, magnam ab eius autem est.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slide">
-                        <div class="ftco-feature-1">
-                            <span class="icon flaticon-fruit-juice"></span>
-                            <div class="ftco-feature-1-text">
-                                <h2>Impedit alias</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis beatae impedit alias ad unde?</p>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="slide">
                         <div class="ftco-feature-1">
                             <span class="icon flaticon-stationary-bike"></span>
                             <div class="ftco-feature-1-text">
-                                <h2>Recusandae nisi</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, minima quod optio recusandae nisi.</p>
+                                <h2>@COURSEL_ITEMS_TITLE</h2>
+                                <p>@COURSEL_ITEMS_DESC</p>
                             </div>
                         </div>
                     </div>
@@ -103,16 +89,26 @@
                 </div>
 
             </div>
-        </div>
 
 
 
-        <div class="bgimg" style="background-image: url('images/bg_1.jpg');" data-stellar-background-ratio="0.5">
+
+<div Class="bgimg"
+     style="background-image: url('@Url.Content("~/Images/" + (string.IsNullOrEmpty(ViewBag.BackgroundImagePath2) ? "default.jpg" : ViewBag.BackgroundImagePath2))');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <div class="container">
                 <div class="row align-items-center justify-content-center text-center">
                     <div class="col-md-7">
-                        <h2 class="">Your Fitness Partner Where Ever You Are</h2>
-                        <p class="lead mx-auto desc mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint, nisi cum officia alias recusandae neque reprehenderit.</p>
+                        <h2 class="">@BACKGROUND_TITLE2</h2>
+                        <p>@BACKGROUND_DESC2 </p>
                     </div>
                 </div>
             </div>
@@ -126,12 +122,9 @@
                 <div class="row justify-content-center text-center mb-5" data-aos="fade-up">
                     <div class="col-md-8  section-heading">
                         <span class="subheading">Trainer</span>
-                        <h2 class="heading mb-3">Our Trainers</h2>
+                        <h2 class="heading mb-3">@TRAINER_TITLE</h2>
                         <p>
-                            Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind
-                            texts.
-                            Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
-                        </p>
+                            @TRAINER_DESC </p>
                     </div>
                 </div>
                 @*edit the trainers info to be dynamically taken from the database*@
@@ -190,10 +183,9 @@
                 <div class="row justify-content-center text-center mb-5" data-aos="fade-up">
                     <div class="col-md-8  section-heading">
                         <span class="subheading">Fitness Services</span>
-                        <h2 class="heading mb-3">Services</h2>
+                        <h2 class="heading mb-3">@SERVICES_TITLE</h2>
                         <p>
-                            Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind
-                            texts.
+                            @SERVICES_DESC1
                         </p>
                     </div>
                 </div>
@@ -203,8 +195,8 @@
                         <div class="ftco-feature-1">
                             <span class="icon flaticon-fit"></span>
                             <div class="ftco-feature-1-text">
-                                <h2>Be Fit</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur tempora delectus aut, mollitia. Veritatis!</p>
+                                
+                                <p>@SERVICES_DESC2</p>
                             </div>
                         </div>
                     </div>
