@@ -314,6 +314,7 @@ public partial class ModelContext : DbContext
 
         modelBuilder.Entity<Paidplan>(entity =>
         {
+
             entity.HasKey(e => e.PlanId).HasName("SYS_C008393");
 
             entity.ToTable("PAIDPLANS");
@@ -340,6 +341,9 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("USER_ID");
+            entity.Property(e => e.TrainerId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("TRAINERID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Paidplans)
                 .HasForeignKey(d => d.UserId)
@@ -373,18 +377,41 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("ROUTINE_ID");
+
             entity.Property(e => e.Desc)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("DESC_");
+
             entity.Property(e => e.ImagePath)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("IMAGE_PATH");
+
             entity.Property(e => e.RoutineTime)
                 .HasColumnType("DATE")
                 .HasColumnName("ROUTINE_TIME");
+
+            entity.Property(e => e.UserId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("USERID"); // Added UserId
+
+            entity.Property(e => e.TrainerId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("TRAINERID"); // Added TrainerId
+
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Routines)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ROUTINES_USER_ID"); // Added relationship with User
+
+            entity.HasOne(d => d.Trainer).WithMany()
+                .HasForeignKey(d => d.TrainerId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ROUTINE_TRAINER_ID"); // Added relationship with Trainer
         });
+
 
         modelBuilder.Entity<Schedule>(entity =>
         {

@@ -46,7 +46,7 @@
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1 || HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 3)
                 {
                     <li class="nav-item menu-items">
-                        <a class="nav-link" href="/Admin/AdminDashboard">
+                        <a class="nav-link" asp-controller="AdminDashboard" asp-action="AdminDashboard">
                             <span class="menu-icon">
                                 <i class="mdi mdi-speedometer"></i>
                             </span>
@@ -59,7 +59,7 @@
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1)
                 {
                     <li class="nav-item menu-items">
-                        <a class="nav-link" href="/Users">
+                        <a class="nav-link" asp-controller="Users" asp-action="Index">
                             <span class="menu-icon">
                                 <i class="mdi mdi-account"></i>
                             </span>
@@ -67,7 +67,7 @@
                         </a>
                     </li>
                     <li class="nav-item menu-items">
-                        <a class="nav-link" href="/Paidplans">
+                        <a class="nav-link" asp-controller="Paidplans" asp-action="Index">
                             <span class="menu-icon">
                                 <i class="mdi mdi-currency-usd"></i>
                             </span>
@@ -75,7 +75,7 @@
                         </a>
                     </li>
                     <li class="nav-item menu-items">
-                        <a class="nav-link" href="/Services">
+                        <a class="nav-link" asp-controller="Services" asp-action="Index">
                             <span class="menu-icon">
                                 <i class="mdi mdi-briefcase"></i>
                             </span>
@@ -83,7 +83,7 @@
                         </a>
                     </li>
                     <li class="nav-item menu-items">
-                        <a class="nav-link" href="/Testimonials">
+                        <a class="nav-link" asp-controller="Testimonials" asp-action="Index">
                             <span class="menu-icon">
                                 <i class="mdi mdi-comment"></i>
                             </span>
@@ -92,7 +92,7 @@
                     </li>
                     <!-- Admin Profile Tab -->
                     <li class="nav-item menu-items">
-                        <a class="nav-link" href="/Admin/Profile">
+                        <a class="nav-link" asp-controller="AdminDashboard" asp-action="Profile">
                             <span class="menu-icon">
                                 <i class="mdi mdi-account-circle"></i>
                             </span>
@@ -100,10 +100,42 @@
                         </a>
                     </li>
                 }
+                <li class="nav-item menu-items">
+                    <a class="nav-link" asp-controller="Classes" asp-action="Index">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-school"></i>
+                        </span>
+                        <span class="menu-title">Manage Classes Page</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" asp-controller="HomePageContents" asp-action="Index">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-home"></i>
+                        </span>
+                        <span class="menu-title">Manage Home Page</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" asp-controller="SchedulePageContents" asp-action="Index">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-calendar"></i>
+                        </span>
+                        <span class="menu-title">Manage Schedule Page</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" asp-controller="ClassPageContents" asp-action="Index">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-briefcase"></i>
+                        </span>
+                        <span class="menu-title">Manage Class Page</span>
+                    </a>
+                </li>
 
                 <!-- Logout -->
                 <li class="nav-item menu-items">
-                    <a class="nav-link" href="/Auth/Logout">
+                    <a class="nav-link" asp-controller="Auth" asp-action="Logout">
                         <span class="menu-icon">
                             <i class="mdi mdi-logout"></i>
                         </span>
@@ -118,7 +150,7 @@
                 <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
                     <ul class="navbar-nav w-100">
                         <li class="nav-item w-100">
-                            <form method="get" action="/Admin/Search" class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+                            <form method="get" asp-controller="AdminDashboard" asp-action="Search" class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
                                 <input type="text" name="query" class="form-control" placeholder="Search">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </form>

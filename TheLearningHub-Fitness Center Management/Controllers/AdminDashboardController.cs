@@ -183,5 +183,10 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return RedirectToAction("AdminDashboard");
         }
+        public async Task<IActionResult> ManageHomePageContent()
+        {
+            var contents = await _context.HomePageContents.ToListAsync();
+            return View("~/Views/AdminDashboard/ManageHomePageContent.cshtml", contents);
+        }
     }
 }

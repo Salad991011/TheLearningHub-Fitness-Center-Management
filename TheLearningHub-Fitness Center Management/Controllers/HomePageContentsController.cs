@@ -143,6 +143,26 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Dynamic content rendering for the Home page
+        public async Task<IActionResult> RenderHomePage()
+        {
+            var homePageContent = await _context.HomePageContents.FirstOrDefaultAsync();
+            if (homePageContent == null)
+            {
+                return View("Error", new { Message = "Home page content not found." });
+            }
+
+            // Pass data to the view using ViewBag or ViewData
+            ViewBag.MainTitle = homePageContent.MainTitle;
+            ViewBag.BackgroundTitle1 = homePageContent.BackgroundTitle1;
+            ViewBag.BackgroundDesc1 = homePageContent.BackgroundDesc1;
+            ViewBag.BackgroundImagePath1 = homePageContent.BackgroundImagePath1;
+            ViewBag.TrainerTitle = homePageContent.TrainerTitle;
+            ViewBag.ServicesDesc1 = homePageContent.ServicesDesc1;
+
+            return View("Home", homePageContent); // Ensure the view exists as `Home.cshtml`
+        }
+
         private bool HomePageContentExists(decimal id)
         {
             return _context.HomePageContents.Any(e => e.HomePageId == id);

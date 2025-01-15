@@ -160,5 +160,33 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return fileName;
         }
+        public IActionResult CreateRoutine(decimal? userId)
+        {
+            if (userId == null || !_context.Users.Any(u => u.UserId == userId))
+            {
+                return NotFound("User not found.");
+            }
+            var routine = new Routine { UserId = userId.Value };
+            return View(routine);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRoutine(Routine routine)
+        {
+            if (!_context.Users.Any(u => u.UserId == routine.UserId))
+            {
+                ModelState.AddModelError("UserId", "Invalid user.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Routines.Add(routine);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("AssignedUsers", "Trainers");
+            }
+
+            return View(routine);
+        }
+
     }
 }

@@ -208,5 +208,16 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             ViewData["LoginId"] = new SelectList(logins, "LoginId", "Display", selectedLogin);
         }
+        public IActionResult AssignedUsers()
+        {
+            var trainerId = HttpContext.Session.GetInt32("TrainerId");
+            var users = _context.Users
+                .Include(u => u.Paidplans)
+                .Where(u => u.Paidplans.Any(p => p.TrainerId == trainerId))
+                .ToList();
+
+            return View(users);
+        }
+
     }
 }

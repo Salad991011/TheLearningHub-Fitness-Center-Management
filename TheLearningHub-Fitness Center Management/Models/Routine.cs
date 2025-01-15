@@ -16,5 +16,11 @@ public partial class Routine
     [NotMapped]
     public IFormFile? RoutineImageFile { get; set; }
 
+    public decimal? UserId { get; set; } // User this routine is assigned to
+    public decimal? TrainerId { get; set; } // Trainer who created the routine
+
+    public virtual User? User { get; set; } // Navigation to user
+    public virtual User? Trainer { get; set; } // Navigation to trainer
+
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }

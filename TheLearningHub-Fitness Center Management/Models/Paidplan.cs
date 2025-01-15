@@ -19,10 +19,11 @@ public partial class Paidplan
     public IFormFile? PlanImageFile { get; set; }
 
     public decimal? UserId { get; set; }
-
+    public decimal? TrainerId { get; set; }
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
     public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 
     public virtual User? User { get; set; }
+    public virtual User? Trainer { get; set; }
 }

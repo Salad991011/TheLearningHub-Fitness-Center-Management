@@ -169,5 +169,16 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         {
           return (_context.Schedules?.Any(e => e.ScheduleId == id)).GetValueOrDefault();
         }
+        public IActionResult WeeklySchedule(decimal userId)
+        {
+            var schedules = _context.Schedules
+              .Include(s => s.Routine)
+    .Where(s => s.Routine.UserId == userId)
+    .OrderBy(s => s.Day)
+    .ToList();
+
+            return View(schedules);
+        }
+
     }
 }
