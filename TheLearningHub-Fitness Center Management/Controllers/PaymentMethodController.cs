@@ -33,18 +33,19 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             if (activeSubscription != null)
             {
-                // Notify about active subscription and calculate remaining duration
+                // Notify about active subscription
                 var remainingDays = (activeSubscription.DateTo.Value - DateTime.Now).Days;
                 ViewBag.ActiveSubscription = true;
                 ViewBag.RemainingDays = remainingDays;
                 ViewBag.CurrentEndDate = activeSubscription.DateTo.Value.ToString("MM/dd/yyyy");
+                ViewBag.ErrorMessage = "You already have this plan subscribed.";
             }
             else
             {
                 ViewBag.ActiveSubscription = false;
             }
 
-            // Calculate subscription start and end dates for new subscription
+            // Calculate subscription start and end dates for a new subscription
             var startDate = DateTime.Now;
             var endDate = startDate.AddMonths(duration);
 
@@ -73,6 +74,16 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // Check for an existing active subscription
+            var activeSubscription = await _context.Subscriptions
+                .FirstOrDefaultAsync(s => s.PlanId == planId && s.UserId == userId && s.DateTo > DateTime.Now);
+
+            if (activeSubscription != null && !extend)
+            {
+                TempData["Error"] = "You already have this plan subscribed.";
+                return RedirectToAction("PaymentMethod", new { planId, duration, price = plan.PlanPrice });
+            }
+
             // Validate payment details
             if (string.IsNullOrWhiteSpace(cardNumber) || string.IsNullOrWhiteSpace(cardHolderName) ||
                 string.IsNullOrWhiteSpace(expiryDate) || string.IsNullOrWhiteSpace(cvv))
@@ -86,21 +97,14 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             if (paymentSuccessful)
             {
-                if (extend)
+                if (extend && activeSubscription != null)
                 {
                     // Extend the active subscription
-                    var activeSubscription = await _context.Subscriptions
-                        .FirstOrDefaultAsync(s => s.PlanId == planId && s.UserId == userId && s.DateTo > DateTime.Now);
+                    activeSubscription.DateTo = activeSubscription.DateTo.Value.AddMonths(duration);
+                    _context.Subscriptions.Update(activeSubscription);
+                    await _context.SaveChangesAsync();
 
-                    if (activeSubscription != null)
-                    {
-                        activeSubscription.DateTo = activeSubscription.DateTo.Value.AddMonths(duration);
-                        _context.Subscriptions.Update(activeSubscription);
-                        await _context.SaveChangesAsync();
-
-                        TempData["SuccessMessage"] = $"Subscription extended successfully! New end date: {activeSubscription.DateTo:MM/dd/yyyy}";
-                        return RedirectToAction("Index", "Home");
-                    }
+                    TempData["SuccessMessage"] = $"Subscription extended successfully! New end date: {activeSubscription.DateTo:MM/dd/yyyy}";
                 }
                 else
                 {
@@ -120,16 +124,15 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                     await _context.SaveChangesAsync();
 
                     TempData["SuccessMessage"] = "Payment successful! Subscription activated.";
-                    return RedirectToAction("Index", "Home");
                 }
+
+                return RedirectToAction("Index", "Home");
             }
             else
             {
                 TempData["Error"] = "Payment failed. Please try again.";
                 return RedirectToAction("PaymentMethod", new { planId, duration, price = plan.PlanPrice });
             }
-
-            return RedirectToAction("Index", "Home");
         }
     }
 }

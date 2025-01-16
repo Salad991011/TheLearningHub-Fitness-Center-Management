@@ -3,13 +3,9 @@
     ViewData["Title"] = "PaymentMethod";
     Layout = "~/Views/Shared/HomeLayout.cshtml";
 
-    // Determine button text based on ActiveSubscription
-    var buttonText = (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription) ? "Extend Subscription" : "Buy Now";
-
-    // Determine the message based on ActiveSubscription
-    var message = (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
-        ? "Extending helps you stay with us longer!"
-        : "You already have an active subscription!";
+    // Default messages
+    var defaultMessage = "You already have an active subscription!";
+    var extendingMessage = "Extending helps you stay with us longer!";
 }
 
 <div class="container-fluid py-5" style="background-color: #1c1c1c; color: #fff; min-height: 100vh;">
@@ -22,20 +18,22 @@
                         Plan Summary
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title" style="font-weight: bold; color: #ff4081;">@Model.PlanTitle</h4>
+                        <h4 class="card-title" style="font-weight: bold; color: #ff4081;" id="planTitle">@Model.PlanTitle</h4>
                         <img src="@Url.Content($"~/Images/{Model.ImagePath}")" class="img-fluid mx-auto" alt="Plan Image" style="max-height: 200px; object-fit: cover; border-radius: 10px;">
                         <p class="card-text mt-3 text-muted">@Model.PlanDesc</p>
                         <hr />
+                        <p id="dynamicMessage" class="text-warning">
+                            @(ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription ? defaultMessage : "You can subscribe to this plan!")
+                        </p>
                         @if (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
                         {
-                            <p class="text-warning">@message</p>
-                            <p>Remaining Days: @ViewBag.RemainingDays days</p>
-                            <p>Current End Date: @ViewBag.CurrentEndDate</p>
+                            <p id="remainingDays">Remaining Days: @ViewBag.RemainingDays days</p>
+                            <p id="currentEndDate">Current End Date: @ViewBag.CurrentEndDate</p>
                         }
-                        <p class="mb-1"><strong>Duration:</strong> @ViewBag.SelectedDuration Months</p>
-                        <p class="mb-1"><strong>Start Date:</strong> @ViewBag.StartDate</p>
-                        <p class="mb-1"><strong>End Date:</strong> @ViewBag.EndDate</p>
-                        <p class="mb-1"><strong>Total Price:</strong> <span style="color: #ff4081;">$@ViewBag.Price</span></p>
+                        <p id="planDuration" class="mb-1"><strong>Duration:</strong> @ViewBag.SelectedDuration Months</p>
+                        <p id="startDate" class="mb-1"><strong>Start Date:</strong> @ViewBag.StartDate</p>
+                        <p id="endDate" class="mb-1"><strong>End Date:</strong> @ViewBag.EndDate</p>
+                        <p id="totalPrice" class="mb-1"><strong>Total Price:</strong> <span style="color: #ff4081;">$@ViewBag.Price</span></p>
                     </div>
                 </div>
             </div>
@@ -49,7 +47,7 @@
                     <div class="card-body">
                         <form method="post" action="/PaymentMethod/ProcessPayment">
                             <input type="hidden" name="PlanId" value="@Model.PlanId" />
-                            <input type="hidden" name="Price" value="@ViewBag.Price" />
+                            <input type="hidden" name="Price" id="hiddenPrice" value="@ViewBag.Price" />
                             <div class="mb-3">
                                 <label for="cardNumber" class="form-label">Card Number</label>
                                 <input type="text" id="cardNumber" name="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" required />
@@ -68,21 +66,18 @@
                                     <input type="text" id="cvv" name="CVV" class="form-control" placeholder="123" required />
                                 </div>
                             </div>
-                            @if (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
-                            {
-                                <div class="mb-3">
-                                    <label for="extendDuration" class="form-label">Extend Subscription</label>
-                                    <select id="extendDuration" name="Duration" class="form-select">
-                                        <option value="1">1 Month</option>
-                                        <option value="3">3 Months</option>
-                                        <option value="12">1 Year</option>
-                                    </select>
-                                    <input type="hidden" name="extend" value="true" />
-                                </div>
-                            }
+                            <div class="mb-3">
+                                <label for="extendDuration" class="form-label">Extend Subscription</label>
+                                <select id="extendDuration" name="Duration" class="form-select" onchange="updatePlanSummary()">
+                                    <option value="1" data-price="@Model.PlanPrice">1 Month</option>
+                                    <option value="3" data-price="@Model.PlanPrice3Months">3 Months</option>
+                                    <option value="12" data-price="@Model.PlanPrice1Year">1 Year</option>
+                                </select>
+                                <input type="hidden" name="extend" value="true" />
+                            </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg" style="background-color: #ff4081; border: none;">
-                                    @buttonText
+                                    Extend Subscription
                                 </button>
                             </div>
                         </form>
@@ -92,3 +87,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    function updatePlanSummary() {
+        const dropdown = document.getElementById('extendDuration');
+        const selectedOption = dropdown.options[dropdown.selectedIndex];
+        const duration = parseInt(selectedOption.value);
+        const price = selectedOption.getAttribute('data-price');
+
+        // Calculate new end date
+        const currentEndDate = new Date('@ViewBag.CurrentEndDate');
+        const newEndDate = new Date(currentEndDate.setMonth(currentEndDate.getMonth() + duration));
+        const formattedNewEndDate = newEndDate.toLocaleDateString('en-US');
+
+        // Update plan summary
+        document.getElementById('planDuration').innerHTML = `<strong>Duration:</strong> ${duration} Months`;
+        document.getElementById('endDate').innerHTML = `<strong>End Date:</strong> ${formattedNewEndDate}`;
+        document.getElementById('totalPrice').innerHTML = `<strong>Total Price:</strong> <span style="color: #ff4081;">$${parseFloat(price).toFixed(2)}</span>`;
+
+        // Update dynamic message
+        const dynamicMessage = document.getElementById('dynamicMessage');
+        if (duration > @ViewBag.SelectedDuration) {
+            dynamicMessage.textContent = "Extending helps you stay with us longer!";
+        } else {
+            dynamicMessage.textContent = "You already have an active subscription!";
+        }
+
+        // Update hidden price field for form submission
+        document.getElementById('hiddenPrice').value = price;
+    }
+</script>
