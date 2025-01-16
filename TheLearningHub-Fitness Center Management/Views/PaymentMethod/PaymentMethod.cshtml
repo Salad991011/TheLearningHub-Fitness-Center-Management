@@ -2,6 +2,14 @@
 @{
     ViewData["Title"] = "PaymentMethod";
     Layout = "~/Views/Shared/HomeLayout.cshtml";
+
+    // Determine button text based on ActiveSubscription
+    var buttonText = (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription) ? "Extend Subscription" : "Buy Now";
+
+    // Determine the message based on ActiveSubscription
+    var message = (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
+        ? "Extending helps you stay with us longer!"
+        : "You already have an active subscription!";
 }
 
 <div class="container-fluid py-5" style="background-color: #1c1c1c; color: #fff; min-height: 100vh;">
@@ -18,6 +26,12 @@
                         <img src="@Url.Content($"~/Images/{Model.ImagePath}")" class="img-fluid mx-auto" alt="Plan Image" style="max-height: 200px; object-fit: cover; border-radius: 10px;">
                         <p class="card-text mt-3 text-muted">@Model.PlanDesc</p>
                         <hr />
+                        @if (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
+                        {
+                            <p class="text-warning">@message</p>
+                            <p>Remaining Days: @ViewBag.RemainingDays days</p>
+                            <p>Current End Date: @ViewBag.CurrentEndDate</p>
+                        }
                         <p class="mb-1"><strong>Duration:</strong> @ViewBag.SelectedDuration Months</p>
                         <p class="mb-1"><strong>Start Date:</strong> @ViewBag.StartDate</p>
                         <p class="mb-1"><strong>End Date:</strong> @ViewBag.EndDate</p>
@@ -35,7 +49,6 @@
                     <div class="card-body">
                         <form method="post" action="/PaymentMethod/ProcessPayment">
                             <input type="hidden" name="PlanId" value="@Model.PlanId" />
-                            <input type="hidden" name="Duration" value="@ViewBag.SelectedDuration" />
                             <input type="hidden" name="Price" value="@ViewBag.Price" />
                             <div class="mb-3">
                                 <label for="cardNumber" class="form-label">Card Number</label>
@@ -55,8 +68,22 @@
                                     <input type="text" id="cvv" name="CVV" class="form-control" placeholder="123" required />
                                 </div>
                             </div>
+                            @if (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
+                            {
+                                <div class="mb-3">
+                                    <label for="extendDuration" class="form-label">Extend Subscription</label>
+                                    <select id="extendDuration" name="Duration" class="form-select">
+                                        <option value="1">1 Month</option>
+                                        <option value="3">3 Months</option>
+                                        <option value="12">1 Year</option>
+                                    </select>
+                                    <input type="hidden" name="extend" value="true" />
+                                </div>
+                            }
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary btn-lg" style="background-color: #ff4081; border: none;">Buy Now</button>
+                                <button type="submit" class="btn btn-primary btn-lg" style="background-color: #ff4081; border: none;">
+                                    @buttonText
+                                </button>
                             </div>
                         </form>
                     </div>
