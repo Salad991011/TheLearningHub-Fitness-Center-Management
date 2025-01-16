@@ -169,5 +169,8 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         {
           return (_context.Subscriptions?.Any(e => e.SubscriptionId == id)).GetValueOrDefault();
         }
+       
+
+
     }
 }

@@ -71,7 +71,14 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
        .Include(p => p.Trainer) // Include Trainer navigation property
        .ToList();
 
-
+            foreach (var plan in plans)
+            {
+                if (plan.PlanPrice.HasValue)
+                {
+                    plan.PlanPrice3Months = plan.PlanPrice * 1.5m;
+                    plan.PlanPrice1Year = plan.PlanPrice * 1.9m;
+                }
+            }
 
             return View(plans);
         }
@@ -104,6 +111,14 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 		{
 			return View("~/Views/Home/Classes.cshtml");
 		}
+
+
+        [HttpGet]
+        public JsonResult CheckLogin()
+        {
+            var isLoggedIn = HttpContext.Session.GetInt32("UserId") != null;
+            return Json(new { isLoggedIn });
+        }
 
 
         public IActionResult TrainerDashboard()

@@ -1,36 +1,67 @@
-﻿
+﻿@model TheLearningHub_Fitness_Center_Management.Models.Paidplan
 @{
     ViewData["Title"] = "PaymentMethod";
     Layout = "~/Views/Shared/HomeLayout.cshtml";
 }
 
-
-<div class="container mt-5">
-    <h2 class="text-center">Payment Method</h2>
-    <form method="post" action="/Payment/ProcessPayment" class="mt-4">
-        <div class="form-group">
-            <label for="cardNumber">Card Number</label>
-            <input type="text" id="cardNumber" name="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" required />
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="cardHolderName">Cardholder Name</label>
-            <input type="text" id="cardHolderName" name="CardHolderName" class="form-control" placeholder="John Doe" required />
-        </div>
-
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <label for="expiryDate">Expiry Date</label>
-                <input type="text" id="expiryDate" name="ExpiryDate" class="form-control" placeholder="MM/YY" required />
+<div class="container-fluid py-5" style="background-color: #1c1c1c; color: #fff; min-height: 100vh;">
+    <div class="container pt-5">
+        <div class="row justify-content-center">
+            <!-- Plan Summary Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card text-center shadow" style="background-color: #2b2b2b; color: #fff; border: none; border-radius: 10px;">
+                    <div class="card-header" style="background-color: #ff4081; color: white; font-weight: bold;">
+                        Plan Summary
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title" style="font-weight: bold; color: #ff4081;">@Model.PlanTitle</h4>
+                        <img src="@Url.Content($"~/Images/{Model.ImagePath}")" class="img-fluid mx-auto" alt="Plan Image" style="max-height: 200px; object-fit: cover; border-radius: 10px;">
+                        <p class="card-text mt-3 text-muted">@Model.PlanDesc</p>
+                        <hr />
+                        <p class="mb-1"><strong>Duration:</strong> @ViewBag.SelectedDuration Months</p>
+                        <p class="mb-1"><strong>Start Date:</strong> @ViewBag.StartDate</p>
+                        <p class="mb-1"><strong>End Date:</strong> @ViewBag.EndDate</p>
+                        <p class="mb-1"><strong>Total Price:</strong> <span style="color: #ff4081;">$@ViewBag.Price</span></p>
+                    </div>
+                </div>
             </div>
+
+            <!-- Payment Method Section -->
             <div class="col-md-6">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="CVV" class="form-control" placeholder="123" required />
+                <div class="card shadow" style="background-color: #2b2b2b; color: #fff; border: none; border-radius: 10px;">
+                    <div class="card-header" style="background-color: #343a40; color: white; font-weight: bold;">
+                        Payment Method
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/PaymentMethod/ProcessPayment">
+                            <input type="hidden" name="PlanId" value="@Model.PlanId" />
+                            <input type="hidden" name="Duration" value="@ViewBag.SelectedDuration" />
+                            <input type="hidden" name="Price" value="@ViewBag.Price" />
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Card Number</label>
+                                <input type="text" id="cardNumber" name="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="cardHolderName" class="form-label">Cardholder Name</label>
+                                <input type="text" id="cardHolderName" name="CardHolderName" class="form-control" placeholder="John Doe" required />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="text" id="expiryDate" name="ExpiryDate" class="form-control" placeholder="MM/YY" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" id="cvv" name="CVV" class="form-control" placeholder="123" required />
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg" style="background-color: #ff4081; border: none;">Buy Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="form-group mt-4 text-center">
-            <button type="submit" class="btn btn-primary btn-lg">Buy Now</button>
-        </div>
-    </form>
+    </div>
 </div>

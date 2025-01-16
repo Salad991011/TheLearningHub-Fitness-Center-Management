@@ -314,7 +314,6 @@ public partial class ModelContext : DbContext
 
         modelBuilder.Entity<Paidplan>(entity =>
         {
-
             entity.HasKey(e => e.PlanId).HasName("SYS_C008393");
 
             entity.ToTable("PAIDPLANS");
@@ -323,24 +322,38 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("PLAN_ID");
+
             entity.Property(e => e.ImagePath)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("IMAGE_PATH");
+
             entity.Property(e => e.PlanDesc)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("PLAN_DESC");
+
             entity.Property(e => e.PlanPrice)
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("PLAN_PRICE");
+
+            entity.Property(e => e.PlanPrice3Months)
+                .HasColumnType("NUMBER(10,2)")
+                .HasColumnName("PLANPRICE3MONTHS");
+
+            entity.Property(e => e.PlanPrice1Year)
+                .HasColumnType("NUMBER(10,2)")
+                .HasColumnName("PLANPRICE1YEAR");
+
             entity.Property(e => e.PlanTitle)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PLAN_TITLE");
+
             entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("USER_ID");
+
             entity.Property(e => e.TrainerId)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("TRAINERID");
