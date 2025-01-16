@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using TheLearningHub_Fitness_Center_Management.Models;
 
@@ -57,11 +58,42 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             
             ViewBag.ServiceImagePath2 = string.IsNullOrEmpty(ServiceImagePath2) ? "default.jpg" : ServiceImagePath2;
 
+            var services = _context.Services.ToList();
+            ViewBag.Services = services;
 
-            return View();
+            var trainers = _context.Users
+        .Where(u => u.RoleId == 3) // Replace '2' with the actual RoleId for trainers
+        .ToList();
+
+            ViewBag.Trainers = trainers;
+
+            var plans = _context.Paidplans
+       .Include(p => p.Trainer) // Include Trainer navigation property
+       .ToList();
+
+
+
+            return View(plans);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SubmitFeedback(Contactu feedback)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Contactus.Add(feedback);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Your feedback has been submitted successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to submit feedback. Please try again.";
+            }
+
+            return RedirectToAction("Index");
         }
 
-		[Authorize]
+
+        [Authorize]
 		public IActionResult Schedule()
 		{
 			return View("~/Views/Home/Schedule.cshtml");

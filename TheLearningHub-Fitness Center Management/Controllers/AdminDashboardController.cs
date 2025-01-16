@@ -45,8 +45,50 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             ViewBag.TotalSales = _context.Paidplans.Sum(p => p.PlanPrice);
             ViewBag.ActiveMembers = _context.Users.Count();
 
+
+            var feedbacks = _context.Contactus.ToList();
+
+            ViewBag.Feedbacks = feedbacks;
+
+           
+
+
             return View("~/Views/AdminDashboard/AdminDashboard.cshtml");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteSelectedFeedback([FromForm] List<decimal> selectedFeedbackIds)
+        {
+            if (selectedFeedbackIds != null && selectedFeedbackIds.Any())
+            {
+                try
+                {
+                    var feedbacksToDelete = _context.Contactus
+                        .Where(f => selectedFeedbackIds.Contains(f.ContactId))
+                        .ToList();
+
+                    if (feedbacksToDelete.Any())
+                    {
+                        _context.Contactus.RemoveRange(feedbacksToDelete);
+                        await _context.SaveChangesAsync();
+
+                        TempData["SuccessMessage"] = "Selected feedback entries deleted successfully.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to delete selected feedback: {ex.Message}");
+                    TempData["ErrorMessage"] = "Failed to delete selected feedback. Please try again.";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No feedback entries selected for deletion.";
+            }
+
+            return RedirectToAction("AdminDashboard");
+        }
+
 
         [HttpGet]
         public IActionResult Profile()
@@ -183,6 +225,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return RedirectToAction("AdminDashboard");
         }
+
         public async Task<IActionResult> ManageHomePageContent()
         {
             var contents = await _context.HomePageContents.ToListAsync();

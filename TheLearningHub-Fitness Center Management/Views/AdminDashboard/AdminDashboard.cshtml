@@ -197,6 +197,58 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">User Feedback</h4>
+            <p class="text-muted">Feedback submitted by users</p>
+            <form method="post" action="/Admin/DeleteSelectedFeedback">
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-danger">Delete Selected</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                    @if (ViewBag.Feedbacks != null && ((List<Contactu>)ViewBag.Feedbacks).Count > 0)
+                                    {
+                                        foreach (var feedback in ViewBag.Feedbacks)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="selectedFeedbackIds" value="@feedback.ContactId">
+                                                </td>
+                                                <td>@feedback.Fname</td>
+                                                <td>@feedback.Lname</td>
+                                                <td>@feedback.Email</td>
+                                                <td>@feedback.Subj</td>
+                                                <td>@feedback.Msg</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">No feedback available.</td>
+                                    </tr>
+                                    }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
     </div>
 
     <script>
