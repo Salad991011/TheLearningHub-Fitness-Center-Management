@@ -26,7 +26,11 @@
                     <div class="profile-desc">
                         <div class="profile-pic">
                             <div class="count-indicator">
-                                <img class="img-xs rounded-circle" src="~/AdminDesign/assets/images/faces/face15.jpg" alt="">
+                                <img class="img-xs rounded-circle"
+                                     src="@ViewData["ProfileImage"] ?? Url.Content(" ~ /AdminDesign/assets/images/faces/placeholder.png")"
+                                     alt="Profile Picture">
+
+
                             </div>
                             <div class="profile-name">
                                 <h5 class="mb-0 font-weight-normal">@HttpContextAccessor.HttpContext.Session.GetString("Username")</h5>
@@ -38,15 +42,27 @@
                         </div>
                     </div>
                 </li>
+
                 <li class="nav-item nav-category">
                     <span class="nav-link">Navigation</span>
                 </li>
 
                 <!-- Admin & Trainer Shared Dashboard -->
-                @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1 || HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 3)
+                @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1)
                 {
                     <li class="nav-item menu-items">
                         <a class="nav-link" asp-controller="AdminDashboard" asp-action="AdminDashboard">
+                            <span class="menu-icon">
+                                <i class="mdi mdi-speedometer"></i>
+                            </span>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                }
+                @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 3)
+                {
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="TrainerDashboard" asp-action="TrainerDashboard">
                             <span class="menu-icon">
                                 <i class="mdi mdi-speedometer"></i>
                             </span>
@@ -132,7 +148,7 @@
                         <span class="menu-title">Manage Class Page</span>
                     </a>
                 </li>
-
+                <!-- Add this menu item under Admin-only operations -->
                 <!-- Logout -->
                 <li class="nav-item menu-items">
                     <a class="nav-link" asp-controller="Auth" asp-action="Logout">

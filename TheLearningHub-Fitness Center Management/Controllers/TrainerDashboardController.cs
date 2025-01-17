@@ -16,36 +16,25 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
         public IActionResult TrainerDashboard()
         {
-            // Fetch trainer ID from session
             var trainerId = HttpContext.Session.GetInt32("UserId");
             if (trainerId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            // Fetch users assigned to this trainer along with their membership details and routines
             var assignedUsers = _context.Users
                 .Include(u => u.Subscriptions)
-                .ThenInclude(s => s.Plan) // Include membership plans
+                    .ThenInclude(s => s.Plan)
                 .Include(u => u.Routines)
+                    .ThenInclude(r => r.Trainer)
                 .Where(u => u.Routines.Any(r => r.TrainerId == trainerId))
-                .Select(u => new
-                {
-                    u.UserId,
-                    Name = $"{u.Fname} {u.Lname}",
-                    u.Email,
-                    MembershipName = u.Subscriptions.FirstOrDefault().Plan.PlanTitle,
-                    MembershipStart = u.Subscriptions.FirstOrDefault().DateFrom,
-                    MembershipEnd = u.Subscriptions.FirstOrDefault().DateTo,
-                    TrainerName = u.Routines.FirstOrDefault().Trainer.Fname
-                })
                 .ToList();
 
-            // Pass data to the view
-            ViewBag.AssignedUsers = assignedUsers;
+            ViewBag.AssignedUsers = assignedUsers ?? new List<User>();
 
             return View();
         }
+
 
         [HttpGet]
         public IActionResult EditWeeklySchedule(decimal userId)

@@ -7,62 +7,112 @@
     <title>Sign Up</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="~/LoginAndRegisterDesign/images/icons/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/animate/animate.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/css-hamburgers/hamburgers.min.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/animsition/css/animsition.min.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/select2/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/css/util.css">
     <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/css/main.css">
+    <style>
+        .custom-container {
+            max-width: 750px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: none;
+        }
+
+            .input-group-text i {
+                color: #e91e63;
+            }
+
+        .btn-signup {
+            background-color: #e91e63;
+            border: none;
+        }
+
+            .btn-signup:hover {
+                background-color: #d81b60;
+            }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
 </head>
+
 <body>
-
-
     <div class="limiter">
         <div class="container-login100" style="background-image: url('/LoginAndRegisterDesign/images/bg-01.jpg');">
-            <div class="wrap-login100 p-t-30 p-b-50">
-                <span class="login100-form-title p-b-41">Account Sign Up</span>
+            <div class="custom-container">
+                <h2 class="text-center mb-4">Account Sign Up</h2>
 
                 @if (TempData["Error"] != null)
                 {
                     <div class="alert alert-danger">@TempData["Error"]</div>
                 }
 
-                <form class="login100-form validate-form p-b-33 p-t-5" method="post" asp-action="Register" asp-controller="Auth">
-                    <div class="wrap-input100 validate-input" data-validate="Enter Email">
-                        <input class="input100" type="email" name="email" placeholder="Email" required>
-                        <span class="focus-input100" data-placeholder="&#xe82a;"></span>
+                <form method="post" asp-action="Register" asp-controller="Auth" enctype="multipart/form-data">
+                    <!-- First Name -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input class="form-control" type="text" name="fname" placeholder="First Name" required>
                     </div>
-                    <div class="wrap-input100 validate-input" data-validate="Enter password">
-                        <input class="input100" type="password" name="password" placeholder="Password" required>
-                        <span class="focus-input100" data-placeholder="&#xe80f;"></span>
+
+                    <!-- Last Name -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input class="form-control" type="text" name="lname" placeholder="Last Name" required>
                     </div>
-                    <div class="wrap-input100 validate-input" data-validate="Confirm password">
-                        <input class="input100" type="password" name="confirm_password" placeholder="Confirm Password" required>
-                        <span class="focus-input100" data-placeholder="&#xe80f;"></span>
+
+                    <!-- Email -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input class="form-control" type="email" name="email" placeholder="Email" required>
                     </div>
-                    <div class="container-login100-form-btn m-t-32">
-                        <button class="login100-form-btn" type="submit">Sign Up</button>
+
+                    <!-- Phone Number -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input class="form-control" type="text" name="phoneNumber" placeholder="Phone Number" required>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input class="form-control" type="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input class="form-control" type="password" name="confirm_password" placeholder="Confirm Password" required>
+                    </div>
+
+                    <!-- Profile Picture -->
+                    <div class="mb-4">
+                        <label class="form-label">Upload Profile Picture</label>
+                        <input class="form-control" type="file" name="profileImage" accept="image/*">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button class="btn btn-signup btn-block text-white" type="submit">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!--===============================================================================================-->
     <script src="~/LoginAndRegisterDesign/vendor/jquery/jquery-3.2.1.min.js"></script>
-    <script src="~/LoginAndRegisterDesign/vendor/animsition/js/animsition.min.js"></script>
     <script src="~/LoginAndRegisterDesign/vendor/bootstrap/js/popper.js"></script>
     <script src="~/LoginAndRegisterDesign/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/LoginAndRegisterDesign/vendor/select2/select2.min.js"></script>
-    <script src="~/LoginAndRegisterDesign/vendor/daterangepicker/moment.min.js"></script>
-    <script src="~/LoginAndRegisterDesign/vendor/daterangepicker/daterangepicker.js"></script>
-    <script src="~/LoginAndRegisterDesign/vendor/countdowntime/countdowntime.js"></script>
-    <script src="~/LoginAndRegisterDesign/js/main.js"></script>
-
 </body>

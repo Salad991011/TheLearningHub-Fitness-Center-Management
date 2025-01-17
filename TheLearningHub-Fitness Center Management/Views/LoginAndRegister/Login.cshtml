@@ -1,87 +1,66 @@
 ﻿@{
-
     Layout = "~/Views/Shared/HomeLayout.cshtml";
-	ViewData["Title"] = "Login";
+    ViewData["Title"] = "Login";
 }
 
 <head>
-	<title>Login V16</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="~/LoginAndRegisterDesign/images/icons/favicon.ico" />
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/bootstrap/css/bootstrap.min.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/animate/animate.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/css-hamburgers/hamburgers.min.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/animsition/css/animsition.min.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/select2/select2.min.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/daterangepicker/daterangepicker.css">
-	<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/css/util.css">
-	<link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/css/main.css">
-	<!--===============================================================================================-->
+    <title>Account Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/LoginAndRegisterDesign/css/main.css">
+    <style>
+        .custom-icon {
+            color: #e91e63; /* Same color as Signup Page Icons */
+        }
+    </style>
 </head>
+
 <body>
+    <div class="limiter">
+        <div class="container-login100" style="background-image: url('/LoginAndRegisterDesign/images/bg-01.jpg');">
+            <div class="card shadow-lg" style="width: 400px; margin: auto; margin-top: 100px; padding: 20px; border-radius: 15px; background-color: rgba(255, 255, 255, 0.85);">
+                <h2 class="text-center mb-4" style="font-weight: bold;">Account Login</h2>
 
-	@{
-		Layout = "~/Views/Shared/HomeLayout.cshtml";
-		ViewData["Title"] = "Login";
-	}
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["Error"]</div>
+                }
 
-	<div class="limiter">
-		<div class="container-login100" style="background-image: url('/LoginAndRegisterDesign/images/bg-01.jpg');">
-			<div class="wrap-login100 p-t-30 p-b-50">
-				<span class="login100-form-title p-b-41">Account Login</span>
+                <form class="login-form" method="post" asp-action="Login" asp-controller="Auth">
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
 
-				@if (TempData["Error"] != null)
-				{
-					<div class="alert alert-danger">@TempData["Error"]</div>
-				}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Email/Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fas fa-user custom-icon"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your email or username" required>
+                        </div>
+                    </div>
 
-				<form class="login100-form validate-form p-b-33 p-t-5" method="post" asp-action="Login" asp-controller="Auth">
-					<input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-					<div class="wrap-input100 validate-input" data-validate="Enter username">
-						<input class="input100" type="text" name="username" placeholder="User name" required>
-						<span class="focus-input100" data-placeholder="&#xe82a;"></span>
-					</div>
-					<div class="wrap-input100 validate-input" data-validate="Enter password">
-						<input class="input100" type="password" name="password" placeholder="Password" required>
-						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
-					</div>
-					<div class="container-login100-form-btn m-t-32">
-						<button class="login100-form-btn" type="submit">Login</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fas fa-lock custom-icon"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                    </div>
 
+                    <div class="text-center">
+                        <button class="btn btn-primary w-100" style="background-color: #e91e63; border: none; padding: 10px 0; border-radius: 25px;">
+                            Login
+                        </button>
+                    </div>
+                </form>
 
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/vendor/jquery/jquery-3.2.1.min.js"></script>
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/vendor/animsition/js/animsition.min.js"></script>
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/vendor/bootstrap/js/popper.js"></script>
-	<script src="~/LoginAndRegisterDesign/vendor/bootstrap/js/bootstrap.min.js"></script>
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/vendor/select2/select2.min.js"></script>
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/vendor/daterangepicker/moment.min.js"></script>
-	<script src="~/LoginAndRegisterDesign/vendor/daterangepicker/daterangepicker.js"></script>
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/vendor/countdowntime/countdowntime.js"></script>
-	<!--===============================================================================================-->
-	<script src="~/LoginAndRegisterDesign/js/main.js"></script>
+                <div class="text-center mt-3">
+                    <p class="text-muted">Don't have an account? <a href="/Auth/Register" style="color: #e91e63;">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script src="~/LoginAndRegisterDesign/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="~/LoginAndRegisterDesign/vendor/bootstrap/js/bootstrap.min.js"></script>
 </body>

@@ -37,15 +37,22 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 .ThenInclude(u => u.Role) // Include Role for debugging/insight
                 .Where(c => c.APPROVALSTATUS == "Approved" || c.APPROVALSTATUS == "Rejected")
                 .ToList();
-
+            var loginId = HttpContext.Session.GetInt32("LoginId");
+            if (loginId != null)
+            {
+                var user = _context.Users.FirstOrDefault(u => u.LoginId == loginId);
+                ViewData["ProfileImage"] = user?.ImagePath != null
+                    ? Url.Content($"~/Images/{user.ImagePath}")
+                    : Url.Content("~/AdminDesign/assets/images/faces/placeholder.png");
+            }
             // Pass data to the view
             ViewBag.PendingClasses = pendingClasses;
             ViewBag.ClassRequests = classRequests;
             ViewBag.ActiveMemberships = activeMemberships;
             ViewBag.TotalSales = _context.Paidplans.Sum(p => p.PlanPrice);
             ViewBag.ActiveMembers = _context.Users.Count();
-
-
+            
+          
             var feedbacks = _context.Contactus.ToList();
 
             ViewBag.Feedbacks = feedbacks;

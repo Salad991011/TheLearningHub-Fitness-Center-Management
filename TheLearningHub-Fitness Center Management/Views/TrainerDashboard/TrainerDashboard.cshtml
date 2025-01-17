@@ -24,15 +24,16 @@
         <tbody>
             @foreach (var user in ViewBag.AssignedUsers as List<TheLearningHub_Fitness_Center_Management.Models.User>)
             {
-                var membership = user.Subscriptions.FirstOrDefault(); // Assuming one subscription per user
-                var trainer = user.Routines.FirstOrDefault()?.Trainer;
+                var membership = user.Subscriptions?.FirstOrDefault();
+                var trainer = user.Routines?.FirstOrDefault()?.Trainer;
+
                 <tr>
                     <td>@user.Fname @user.Lname</td>
                     <td>@user.Email</td>
-                    <td>@membership?.Plan?.PlanTitle ?? "N/A"</td>
-                    <td>@membership?.DateFrom?.ToShortDateString() ?? "N/A"</td>
-                    <td>@membership?.DateTo?.ToShortDateString() ?? "N/A"</td>
-                    <td>@trainer?.Fname @trainer?.Lname</td>
+                    <td>@(membership?.Plan?.PlanTitle ?? "N/A")</td>
+                    <td>@(membership?.DateFrom?.ToShortDateString() ?? "N/A")</td>
+                    <td>@(membership?.DateTo?.ToShortDateString() ?? "N/A")</td>
+                    <td>@(trainer != null ? $"{trainer.Fname} {trainer.Lname}" : "N/A")</td>
                     <td>
                         <a asp-action="EditWeeklySchedule" asp-route-userId="@user.UserId" class="btn btn-primary">Edit Weekly Schedule</a>
                     </td>

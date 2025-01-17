@@ -46,47 +46,52 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         public IActionResult Create()
         {
             PopulateRoleDropDownList();
-            PopulateLoginDropDownList();
             return View();
         }
 
         // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Fname,Lname,Email,PhoneNumber,UsersImageFile,LoginId,RoleId")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,Fname,Lname,Email,PhoneNumber,UsersImageFile,RoleId")] User user, string password)
         {
             if (!ModelState.IsValid)
             {
                 PopulateRoleDropDownList(user.RoleId);
-                PopulateLoginDropDownList(user.LoginId);
                 return View(user);
             }
 
-            if (!_context.Roles.Any(r => r.RoleId == user.RoleId))
+            // Check if the email already exists in Users or Logins
+            if (await _context.Users.AnyAsync(u => u.Email == user.Email) || await _context.Logins.AnyAsync(l => l.UserName == user.Email))
             {
-                ModelState.AddModelError("RoleId", "Selected role does not exist.");
+                TempData["Error"] = "A user with this email already exists.";
                 PopulateRoleDropDownList(user.RoleId);
-                PopulateLoginDropDownList(user.LoginId);
                 return View(user);
             }
 
+            // Handle image upload
             if (user.UsersImageFile != null)
                 user.ImagePath = await SaveImageFile(user.UsersImageFile);
 
-            try
+            // Create a new Login record for this user
+            var login = new Login
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException ex)
-            {
-                Console.WriteLine($"Error: {ex.InnerException?.Message}");
-                ModelState.AddModelError("", "An error occurred while saving the user. Please try again.");
-                PopulateRoleDropDownList(user.RoleId);
-                PopulateLoginDropDownList(user.LoginId);
-                return View(user);
-            }
+                UserName = user.Email, // Use email as username
+                Password = password,   // Use plain password as requested
+                RoleId = user.RoleId   // Assign the correct role
+            };
+
+            _context.Logins.Add(login);
+            await _context.SaveChangesAsync();
+
+            // Assign the newly created LoginId to the user
+            user.LoginId = login.LoginId;
+
+            // Save the new User record
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "User created successfully!";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Edit/5
@@ -95,19 +100,22 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             if (!id.HasValue)
                 return NotFound();
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(u => u.Login).FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null)
                 return NotFound();
 
             PopulateRoleDropDownList(user.RoleId);
-            PopulateLoginDropDownList(user.LoginId);
             return View(user);
+        }
+        private bool UserExists(decimal id)
+        {
+            return _context.Users.Any(e => e.UserId == id);
         }
 
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("UserId,Fname,Lname,Email,PhoneNumber,UsersImageFile,LoginId,RoleId")] User user)
+        public async Task<IActionResult> Edit(decimal id, [Bind("UserId,Fname,Lname,Email,PhoneNumber,UsersImageFile,RoleId")] User user)
         {
             if (id != user.UserId)
                 return NotFound();
@@ -115,17 +123,19 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             if (!ModelState.IsValid)
             {
                 PopulateRoleDropDownList(user.RoleId);
-                PopulateLoginDropDownList(user.LoginId);
                 return View(user);
             }
 
+            // Handle image upload
             if (user.UsersImageFile != null)
                 user.ImagePath = await SaveImageFile(user.UsersImageFile);
 
             try
             {
+                // Update user details
                 _context.Update(user);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "User updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException)
@@ -135,12 +145,12 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
                 throw;
             }
+
             catch (DbUpdateException ex)
             {
                 Console.WriteLine($"Error: {ex.InnerException?.Message}");
                 ModelState.AddModelError("", "An error occurred while updating the user. Please try again.");
                 PopulateRoleDropDownList(user.RoleId);
-                PopulateLoginDropDownList(user.LoginId);
                 return View(user);
             }
         }
@@ -162,21 +172,59 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(decimal id)
+        public async Task<IActionResult> DeleteConfirmed(decimal id, string password)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            // Retrieve the logged-in user's LoginId from the session
+            var loginId = HttpContext.Session.GetInt32("LoginId");
+
+            if (loginId == null)
             {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+                TempData["Error"] = "You must be logged in to perform this action.";
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction(nameof(Index));
-        }
+            // Fetch the logged-in user's Login record
+            var loggedInUser = await _context.Logins.FirstOrDefaultAsync(l => l.LoginId == loginId);
 
-        private bool UserExists(decimal id)
-        {
-            return _context.Users?.Any(e => e.UserId == id) ?? false;
+            // Validate the entered password against the logged-in user's password
+            if (loggedInUser == null || loggedInUser.Password != password)
+            {
+                TempData["Error"] = "Invalid password. Please try again.";
+                return RedirectToAction("Delete", new { id });
+            }
+
+            // Fetch the user to be deleted
+            var user = await _context.Users
+                .Include(u => u.Login)
+                .FirstOrDefaultAsync(u => u.UserId == id);
+
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                // Delete the user's associated Login record, if it exists
+                if (user.Login != null)
+                {
+                    _context.Logins.Remove(user.Login);
+                }
+
+                // Delete the user record
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "User deleted successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An error occurred while deleting the user. Please try again.";
+                Console.WriteLine($"Error: {ex.Message}");
+                return RedirectToAction("Delete", new { id });
+            }
         }
 
         private async Task<string> SaveImageFile(IFormFile imageFile)
@@ -197,27 +245,5 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         {
             ViewBag.Roles = new SelectList(_context.Roles, "RoleId", "RoleName", selectedRole);
         }
-
-        private void PopulateLoginDropDownList(object selectedLogin = null)
-        {
-            var logins = _context.Logins.Select(l => new
-            {
-                l.LoginId,
-                Display = $"{l.LoginId} - {l.UserName}"
-            });
-
-            ViewData["LoginId"] = new SelectList(logins, "LoginId", "Display", selectedLogin);
-        }
-        public IActionResult AssignedUsers()
-        {
-            var trainerId = HttpContext.Session.GetInt32("TrainerId");
-            var users = _context.Users
-                .Include(u => u.Paidplans)
-                .Where(u => u.Paidplans.Any(p => p.TrainerId == trainerId))
-                .ToList();
-
-            return View(users);
-        }
-
     }
 }

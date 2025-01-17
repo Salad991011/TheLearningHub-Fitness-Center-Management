@@ -10,45 +10,56 @@
 <h4>User</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserId" />
+
             <div class="form-group">
                 <label asp-for="Fname" class="control-label"></label>
                 <input asp-for="Fname" class="form-control" />
                 <span asp-validation-for="Fname" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Lname" class="control-label"></label>
                 <input asp-for="Lname" class="form-control" />
                 <span asp-validation-for="Lname" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="UsersImageFile" class="control-label"></label>
+                <label asp-for="UsersImageFile" class="control-label">Profile Picture</label>
                 <input asp-for="UsersImageFile" type="file" class="form-control" />
                 <span asp-validation-for="UsersImageFile" class="text-danger"></span>
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <p>Current Image:</p>
+                    <img src="@Url.Content("~/Images/" + Model.ImagePath)" asp-append-version="true" style="border-radius:20%;" width="100" height="100" />
+                }
+                else
+                {
+                    <p>No profile picture uploaded.</p>
+                }
             </div>
+
             <div class="form-group">
-                <label asp-for="LoginId" class="control-label"></label>
-                <select asp-for="LoginId" class="form-control" asp-items="ViewBag.LoginId"></select>
-                <span asp-validation-for="LoginId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
+                <label asp-for="RoleId" class="control-label">Role</label>
                 <select asp-for="RoleId" class="form-control" asp-items="ViewBag.Roles"></select>
                 <span asp-validation-for="RoleId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -57,5 +68,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>

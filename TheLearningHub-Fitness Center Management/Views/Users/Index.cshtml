@@ -1,72 +1,62 @@
 ﻿@model IEnumerable<TheLearningHub_Fitness_Center_Management.Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "User Management";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>User Management</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New User</a>
 </p>
-<table class="table table-bordered">
-    <thead>
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Fname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                Login ID
-            </th>
-            <th>
-                Role
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Fname)</th>
+            <th>@Html.DisplayNameFor(model => model.Lname)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.ImagePath)</th>
+            <th>Login ID</th>
+            <th>Role</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Fname)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Lname)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@Url.Content("~/Images/" + item.ImagePath)" asp-append-version="true" style="border-radius: 20%;" width="100" height="100" />
+                        }
+                        else
+                        {
+                            <p>No Image</p>
+                        }
+                    </td>
+                    <td>@item.Login?.LoginId</td>
+                    <td>@item.Role?.RoleName</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Lname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    <img src="@Url.Content("~/Images/" + item.ImagePath)" asp-append-version="true" style="border-radius: 20%;" width="100" height="100" />
-                </td>
-                <td>
-                    @item.Login?.LoginId
-                </td>
-                <td>
-                    @item.Role?.RoleName
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-danger btn-sm">Delete</a>
-                </td>
+                <td colspan="8" class="text-center">No users found.</td>
             </tr>
         }
     </tbody>
