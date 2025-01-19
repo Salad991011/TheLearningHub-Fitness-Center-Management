@@ -106,11 +106,37 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 			return View("~/Views/Home/Schedule.cshtml");
 		}
 
-		[Authorize]
-		public IActionResult Classes()
-		{
-			return View("~/Views/Home/Classes.cshtml");
-		}
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Classes()
+        {
+            // Fetch the page content
+            var pageContent = await _context.ClassPageContents.FirstOrDefaultAsync();
+            if (pageContent == null)
+            {
+                // Handle the case where there is no page content
+                pageContent = new ClassPageContent
+                {
+                    BackgroundTitle1 = "Default Title",
+                    BackgroundDesc1 = "Default Description",
+                    BackgroundImagePath1 = "default.jpg",
+                    ClassesTitle = "Default Classes Title",
+                    ClassesDesc = "Default Classes Description"
+                };
+            }
+
+            // Retrieve all approved classes for customers
+            var classes = await _context.Classes
+                .Include(c => c.User) // Ensure the User is included for trainer details
+                .Where(c => c.ISAPPROVED == true) // Only fetch approved classes
+                .ToListAsync();
+
+            // Ensure the classes list is converted to IEnumerable<Class>
+            return View("Classes", (pageContent, classes.AsEnumerable()));
+        }
+
+
+
 
 
         [HttpGet]

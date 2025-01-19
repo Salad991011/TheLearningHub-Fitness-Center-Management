@@ -41,6 +41,59 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return View();
         }
+        public IActionResult Profile()
+        {
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim == null)
+            {
+                TempData["ErrorMessage"] = "Unauthorized access.";
+                return RedirectToAction("AccessDenied", "Auth");
+            }
+
+            var userId = int.Parse(userIdClaim.Value);
+
+            var trainer = _context.Users.FirstOrDefault(u => u.UserId == userId);
+
+            if (trainer == null)
+            {
+                TempData["ErrorMessage"] = "Profile not found.";
+                return RedirectToAction("TrainerDashboard");
+            }
+
+            return View(trainer);
+        }
+
+        public IActionResult Statistics()
+        {
+            // Retrieve UserId from claims
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim == null)
+            {
+                TempData["ErrorMessage"] = "Unauthorized access.";
+                return RedirectToAction("AccessDenied", "Auth");
+            }
+
+            var trainerId = int.Parse(userIdClaim.Value); // Trainer's UserId
+
+            // Calculate total users trained by the trainer
+            var totalUsersTrained = _context.Routines
+                .Where(r => r.TrainerId == trainerId) // Match trainer's ID in Routines
+                .Select(r => r.UserId) // Get user IDs associated with this trainer
+                .Distinct()
+                .Count();
+
+            // Calculate total classes conducted by the trainer
+            var totalClassesConducted = _context.Classes
+                .Where(c => _context.Routines.Any(r => r.TrainerId == trainerId && r.UserId == c.Userid)) // Match classes indirectly via Routines
+                .Count();
+
+            // Pass results to the view
+            ViewBag.TotalUsersTrained = totalUsersTrained;
+            ViewBag.TotalClassesConducted = totalClassesConducted;
+
+            return View();
+        }
+
 
 
         [HttpGet]

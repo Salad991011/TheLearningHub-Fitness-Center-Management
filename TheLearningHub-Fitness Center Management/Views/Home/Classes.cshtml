@@ -1,158 +1,62 @@
-﻿@{
+﻿
+@model (TheLearningHub_Fitness_Center_Management.Models.ClassPageContent, IEnumerable<TheLearningHub_Fitness_Center_Management.Models.Class>)
+
+@{
+
     Layout = "~/Views/Shared/HomeLayout.cshtml";
     ViewData["Title"] = "Classes";
+    var BackgroundImagePath1 = ViewBag.BackgroundImagePath1;
+    var BACKGROUND_TITLE1 = ViewBag.BACKGROUND_TITLE1;
+    var BACKGROUND_DESC1 = ViewBag.BACKGROUND_DESC1;
+    var CLASSES_TITLE = ViewBag.CLASSES_TITLE;
+    var CLASSES_DESC = ViewBag.CLASSES_DESC;
+  // First item in the tuple
+  
+    var pageContent = Model.Item1; // ClassPageContent
+    var classes = Model.Item2; // IEnumerable<Class> // IEnumerable<Class>
 }
-<div class="bgimg" style="background-image: url('~/HomeDesign/images/bg_2.jpg');" data-stellar-background-ratio="0.5">
 
+<!-- Background Section -->
+<div class="bgimg" style="background-image: url('/Images/@pageContent.BackgroundImagePath1');" data-stellar-background-ratio="0.5">
     <div class="container">
         <div class="row align-items-center justify-content-center text-center">
             <div class="col-md-7">
-                <h2 class="">Get The Result You Want</h2>
-                <p class="lead mx-auto desc mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta ut quisquam, distinctio illo, debitis repudiandae.</p>
+                <h2 class="text-white">@pageContent.BackgroundTitle1</h2>
+                <p class="lead mx-auto desc mb-5 text-white">@pageContent.BackgroundDesc1</p>
             </div>
         </div>
     </div>
-
 </div>
 
-
+<!-- Classes Section -->
 <div class="site-section" id="classes-section">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
-            <div class="col-md-8  section-heading">
+            <div class="col-md-8 section-heading">
                 <span class="subheading">Fitness Class</span>
-                <h2 class="heading mb-3">Our Classes</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis consequatur cum neque?
-                    Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
-                </p>
+                <h2 class="heading mb-3">@pageContent.ClassesTitle</h2>
+                <p>@pageContent.ClassesDesc</p>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-6">
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_1.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
+            @foreach (var cls in classes)
+            {
+                <div class="col-lg-6 mb-4">
+                    <div class="class-item d-flex align-items-center">
+                        <a href="#" class="class-item-thumbnail">
+                            <img src="/Images/@cls.Imagepath" alt="@cls.Classname" class="img-fluid">
+                        </a>
+                        <div class="class-item-text pl-3">
+                            <h2 class="mb-1">@cls.Classname</h2>
+                            <span>By @($"{cls.User.Fname} {cls.User.Lname}")</span><br>
+                            <span>Time: @(cls.Classtime.HasValue ? cls.Classtime.Value.ToString("hh:mm tt") : "No Time Available")</span><br>
+                            <span>Date: @(cls.Classdate.HasValue ? cls.Classdate.Value.ToString("MMMM dd, yyyy") : "No Date Available")</span><br>
 
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #1</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
+                            <p>@cls.Classdesc</p>
+                        </div>
                     </div>
                 </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_2.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #2</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_3.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #3</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_4.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #4</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_1.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #5</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-
-            </div>
-            <div class="col-lg-6">
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_1.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #1</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_2.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #2</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_3.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #3</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_4.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #4</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-
-                <div class="class-item d-flex align-items-center">
-                    <a href="~/HomeDesign/single.html" class="class-item-thumbnail">
-                        <img src="~/HomeDesign/images/img_1.jpg" alt="Image">
-                    </a>
-                    <div class="class-item-text">
-
-                        <h2><a href="~/HomeDesign/single.html">Fitness Class Name #5</a></h2>
-                        <span>By Justin Daniel</span>,
-                        <span>30 minutes</span>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>

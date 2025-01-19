@@ -59,9 +59,32 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return View("~/Views/AdminDashboard/AdminDashboard.cshtml");
         }
+        public IActionResult Profile()
+        {
+            // Retrieve admin ID from session
+            var adminId = HttpContext.Session.GetInt32("LoginId"); // Assuming LoginId is stored in the session
+
+            if (adminId == null)
+            {
+                return RedirectToAction("Login", "Auth"); // Redirect to login if session is null
+            }
+
+            // Fetch admin data
+            var admin = _context.Users
+                .Include(u => u.Login) // Include navigation property
+                .FirstOrDefault(u => u.LoginId == adminId);
+
+            if (admin == null)
+            {
+                return NotFound(); // Return 404 if admin not found
+            }
+
+            return View(admin); // Pass admin data to the view
+        }
+    
 
 
-        [HttpPost]
+[HttpPost]
         public async Task<IActionResult> ApproveClass(decimal ClassId)
         {
             var pendingClass = await _context.Classes.Include(c => c.User).FirstOrDefaultAsync(c => c.Classid == ClassId);

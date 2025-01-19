@@ -43,6 +43,8 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return View(classPageContent);
         }
+        // GET: RenderClassPage
+   
 
         // GET: ClassPageContents/Create
         public IActionResult Create()
@@ -143,6 +145,25 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+        // GET: RenderClassPage
+        public async Task<IActionResult> RenderClassPage()
+        {
+            // Fetch the first entry in ClassPageContents
+            var classPageContent = await _context.ClassPageContents.FirstOrDefaultAsync();
+            if (classPageContent == null)
+            {
+                return View("Error", new { Message = "Class page content not found." });
+            }
+
+            // Pass data using ViewBag or Model
+            ViewBag.BackgroundTitle1 = classPageContent.BackgroundTitle1;
+            ViewBag.BackgroundDesc1 = classPageContent.BackgroundDesc1;
+            ViewBag.BackgroundImagePath1 = classPageContent.BackgroundImagePath1;
+            ViewBag.ClassesTitle = classPageContent.ClassesTitle;
+            ViewBag.ClassesDesc = classPageContent.ClassesDesc;
+
+            return View("ClassPage", classPageContent); // Ensure ClassPage.cshtml exists
         }
 
         private bool ClassPageContentExists(decimal id)
