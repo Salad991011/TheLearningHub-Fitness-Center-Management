@@ -1,8 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/AdminLayout.cshtml";
-    ViewData["Title"] = "AdminDashboard";
+    ViewData["Title"] = "Admin Dashboard";
 }
-
+@model List<Class>
 <div class="container-fluid">
     <!-- Feedback Messages -->
     <div class="row">
@@ -61,12 +61,6 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Registered Trainers</h4>
-                    <form method="get" action="/Admin/Trainers" class="mb-3">
-                        <div class="input-group">
-                            <input type="text" name="trainerQuery" class="form-control" placeholder="Search trainers">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </div>
-                    </form>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -78,7 +72,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (ViewBag.Trainers != null)
+                                @if (ViewBag.Trainers != null && ViewBag.Trainers.Count > 0)
                                 {
                                     foreach (var trainer in ViewBag.Trainers)
                                     {
@@ -104,13 +98,14 @@
         </div>
 
         <!-- Manage Classes Section -->
+        <!-- Manage Classes Section -->
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Manage Classes</h4>
                     <p class="text-muted">Pending Class Requests</p>
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Class Name</th>
@@ -129,10 +124,13 @@
                                             <td>@pendingClass.Classdesc</td>
                                             <td>@pendingClass.User.Fname @pendingClass.User.Lname</td>
                                             <td>
-                                                <form method="post" action="/Admin/ApproveClass">
-                                                    <input type="hidden" name="Classid" value="@pendingClass.Classid" />
+                                                <form method="post" action="/Admin/ApproveClass" style="display:inline;">
+                                                    <input type="hidden" name="ClassId" value="@pendingClass.Classid" />
                                                     <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                                    <button type="submit" formaction="/Admin/RejectClass" class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                                <form method="post" action="/Admin/RejectClass" style="display:inline;">
+                                                    <input type="hidden" name="ClassId" value="@pendingClass.Classid" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -157,76 +155,82 @@
                 <div class="card-body">
                     <h4 class="card-title">Classes Requests Summary</h4>
                     <p class="text-muted">Approved or Rejected Requests</p>
-                    <form method="post" action="/Admin/ClearHistory" class="mb-3">
-                        <button type="submit" class="btn btn-danger">Clear History</button>
-                    </form>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Class Name</th>
-                                    <th>Description</th>
-                                    <th>Requested By</th>
-                                    <th>Status</th>
-                                    <th>Note</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (ViewBag.ClassRequests != null && ViewBag.ClassRequests.Count > 0)
-                                {
-                                    foreach (var classRequest in ViewBag.ClassRequests)
+                    <form method="post" action="/Admin/ClearSelectedClasses">
+                        <button type="submit" class="btn btn-danger mb-2">Clear Selected</button>
+                        <button type="submit" formaction="/Admin/RestoreClearedClasses" class="btn btn-primary mb-2">Restore History</button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Class Name</th>
+                                        <th>Description</th>
+                                        <th>Requested By</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.ClassRequests != null && ViewBag.ClassRequests.Count > 0)
+                                    {
+                                        foreach (var classRequest in ViewBag.ClassRequests)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="selectedClassIds" value="@classRequest.Classid" />
+                                                </td>
+                                                <td>@classRequest.Classname</td>
+                                                <td>@classRequest.Classdesc</td>
+                                                <td>@classRequest.User.Fname @classRequest.User.Lname</td>
+                                                <td>@classRequest.APPROVALSTATUS</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
                                     {
                                         <tr>
-                                            <td>@classRequest.Classname</td>
-                                            <td>@classRequest.Classdesc</td>
-                                            <td>@classRequest.User.Fname @classRequest.User.Lname</td>
-                                            <td>@classRequest.APPROVALSTATUS</td>
-                                            <td>Email sent successfully</td>
+                                            <td colspan="5" class="text-center text-muted">No approved/rejected classes available.</td>
                                         </tr>
                                     }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted">No approved/rejected classes available.</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+
+
+
+        <!-- User Feedback Section -->
         <div class="col-md-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">User Feedback</h4>
-            <p class="text-muted">Feedback submitted by users</p>
-            <form method="post" action="/Admin/DeleteSelectedFeedback">
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-danger">Delete Selected</button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Subject</th>
-                                <th>Message</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">User Feedback</h4>
+                    <p class="text-muted">Feedback submitted by users</p>
+                    <form method="post" action="/Admin/DeleteSelectedFeedback">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-danger">Delete Selected</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Subject</th>
+                                        <th>Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @if (ViewBag.Feedbacks != null && ((List<Contactu>)ViewBag.Feedbacks).Count > 0)
                                     {
                                         foreach (var feedback in ViewBag.Feedbacks)
                                         {
                                             <tr>
-                                                <td>
-                                                    <input type="checkbox" name="selectedFeedbackIds" value="@feedback.ContactId">
-                                                </td>
+                                                <td><input type="checkbox" name="selectedFeedbackIds" value="@feedback.ContactId"></td>
                                                 <td>@feedback.Fname</td>
                                                 <td>@feedback.Lname</td>
                                                 <td>@feedback.Email</td>
@@ -237,28 +241,27 @@
                                     }
                                     else
                                     {
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted">No feedback available.</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">No feedback available.</td>
+                                        </tr>
                                     }
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
-    </div>
-
-    <script>
-        // Automatically dismiss alerts after 5 seconds
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(alert => {
-                alert.classList.add('hidden');
-                setTimeout(() => alert.remove(), 500); // Remove after fade out
-            });
-        }, 5000);
-    </script>
-</div>
+<script>
+    // Automatically dismiss alerts after 5 seconds
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(alert => {
+            alert.classList.add('hidden');
+            setTimeout(() => alert.remove(), 500); // Remove after fade out
+        });
+    }, 5000);
+</script>

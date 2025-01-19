@@ -10,38 +10,40 @@
 <h4>Class</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-6">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Classname" class="control-label"></label>
                 <input asp-for="Classname" class="form-control" />
                 <span asp-validation-for="Classname" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Classtime" class="control-label"></label>
-                <input asp-for="Classtime" class="form-control" />
+                <input asp-for="Classtime" type="time" class="form-control" />
                 <span asp-validation-for="Classtime" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Classdate" class="control-label"></label>
-                <input asp-for="Classdate" class="form-control" />
+                <input asp-for="Classdate" type="date" class="form-control" />
                 <span asp-validation-for="Classdate" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Classdesc" class="control-label"></label>
-                <input asp-for="Classdesc" class="form-control" />
+                <textarea asp-for="Classdesc" class="form-control"></textarea>
                 <span asp-validation-for="Classdesc" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Imagepath" class="control-label"></label>
-                <input asp-for="Imagepath" class="form-control" />
-                <span asp-validation-for="Imagepath" class="text-danger"></span>
+                <label asp-for="ClassImageFile" class="control-label">Upload Image</label>
+                <input asp-for="ClassImageFile" type="file" class="form-control-file" />
+                <span asp-validation-for="ClassImageFile" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Userid" class="control-label"></label>
-                <select asp-for="Userid" class ="form-control" asp-items="ViewBag.Userid"></select>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -50,6 +52,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
-

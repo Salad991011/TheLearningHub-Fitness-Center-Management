@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TheLearningHub_Fitness_Center_Management.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TheLearningHub_Fitness_Center_Management.Controllers
 {
@@ -14,23 +15,29 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Trainer")]
         public IActionResult TrainerDashboard()
         {
-            var trainerId = HttpContext.Session.GetInt32("UserId");
-            if (trainerId == null)
+            // Retrieve UserId from claims
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim == null)
             {
-                return RedirectToAction("Login", "Auth");
+                TempData["ErrorMessage"] = "Unauthorized access.";
+                return RedirectToAction("AccessDenied", "Auth");
             }
 
+            var userId = int.Parse(userIdClaim.Value); // Convert UserId to integer
+
+            // Fetch data specific to this trainer
             var assignedUsers = _context.Users
                 .Include(u => u.Subscriptions)
                     .ThenInclude(s => s.Plan)
                 .Include(u => u.Routines)
                     .ThenInclude(r => r.Trainer)
-                .Where(u => u.Routines.Any(r => r.TrainerId == trainerId))
+                .Where(u => u.Routines.Any(r => r.TrainerId == userId)) // Filter by Trainer's UserId
                 .ToList();
 
-            ViewBag.AssignedUsers = assignedUsers ?? new List<User>();
+            ViewBag.AssignedUsers = assignedUsers;
 
             return View();
         }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dashboard</title>
+    <title>@ViewData["Title"] - Admin Dashboard</title>
     <link rel="stylesheet" href="~/AdminDesign/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="~/AdminDesign/assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="~/AdminDesign/assets/vendors/jvectormap/jquery-jvectormap.css">
@@ -17,23 +17,27 @@
 
 <body>
     <div class="container-scroller">
+        <!-- Sidebar Navigation -->
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
                 <a class="sidebar-brand brand-logo" href="#"><img src="~/AdminDesign/assets/images/logo.svg" alt="logo" /></a>
             </div>
             <ul class="nav">
+                <!-- Profile Section -->
                 <li class="nav-item profile">
                     <div class="profile-desc">
                         <div class="profile-pic">
                             <div class="count-indicator">
                                 <img class="img-xs rounded-circle"
-                                     src="@ViewData["ProfileImage"] ?? Url.Content(" ~ /AdminDesign/assets/images/faces/placeholder.png")"
+                                     src="@Url.Content(HttpContextAccessor.HttpContext.Items["ProfileImage"]?.ToString() ?? "~/AdminDesign/assets/images/faces/placeholder.png")"
                                      alt="Profile Picture">
 
 
                             </div>
                             <div class="profile-name">
-                                <h5 class="mb-0 font-weight-normal">@HttpContextAccessor.HttpContext.Session.GetString("Username")</h5>
+                                <h5 class="mb-0 font-weight-normal">
+                                    @HttpContextAccessor.HttpContext.Session.GetString("Username")
+                                </h5>
                                 <span>
                                     @(HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1 ? "Admin" :
                                         (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 3 ? "Trainer" : "User"))
@@ -43,125 +47,89 @@
                     </div>
                 </li>
 
+                <!-- Navigation Links -->
                 <li class="nav-item nav-category">
                     <span class="nav-link">Navigation</span>
                 </li>
 
-                <!-- Admin & Trainer Shared Dashboard -->
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1)
                 {
                     <li class="nav-item menu-items">
                         <a class="nav-link" asp-controller="AdminDashboard" asp-action="AdminDashboard">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-speedometer"></i>
-                            </span>
+                            <span class="menu-icon"><i class="mdi mdi-speedometer"></i></span>
                             <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="Users" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-account"></i></span>
+                            <span class="menu-title">Manage Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="Paidplans" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-currency-usd"></i></span>
+                            <span class="menu-title">Manage Paid Plans</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="Services" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-briefcase"></i></span>
+                            <span class="menu-title">Manage Services</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="Testimonials" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-comment"></i></span>
+                            <span class="menu-title">Manage Testimonials</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="AdminDashboard" asp-action="Profile">
+                            <span class="menu-icon"><i class="mdi mdi-account-circle"></i></span>
+                            <span class="menu-title">Admin Profile</span>
                         </a>
                     </li>
                 }
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 3)
                 {
                     <li class="nav-item menu-items">
-                        <a class="nav-link" asp-controller="TrainerDashboard" asp-action="TrainerDashboard">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-speedometer"></i>
-                            </span>
-                            <span class="menu-title">Dashboard</span>
+                        <a class="nav-link" asp-controller="Classes" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-school"></i></span>
+                            <span class="menu-title">Manage Classes Page</span>
                         </a>
                     </li>
                 }
-
-                <!-- Admin-Only Operations -->
-                @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 1)
-                {
-                    <li class="nav-item menu-items">
-                        <a class="nav-link" asp-controller="Users" asp-action="Index">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-account"></i>
-                            </span>
-                            <span class="menu-title">Manage Users</span>
-                        </a>
-                    </li>
-                    <li class="nav-item menu-items">
-                        <a class="nav-link" asp-controller="Paidplans" asp-action="Index">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-currency-usd"></i>
-                            </span>
-                            <span class="menu-title">Manage Paid Plans</span>
-                        </a>
-                    </li>
-                    <li class="nav-item menu-items">
-                        <a class="nav-link" asp-controller="Services" asp-action="Index">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-briefcase"></i>
-                            </span>
-                            <span class="menu-title">Manage Services</span>
-                        </a>
-                    </li>
-                    <li class="nav-item menu-items">
-                        <a class="nav-link" asp-controller="Testimonials" asp-action="Index">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-comment"></i>
-                            </span>
-                            <span class="menu-title">Manage Testimonials</span>
-                        </a>
-                    </li>
-                    <!-- Admin Profile Tab -->
-                    <li class="nav-item menu-items">
-                        <a class="nav-link" asp-controller="AdminDashboard" asp-action="Profile">
-                            <span class="menu-icon">
-                                <i class="mdi mdi-account-circle"></i>
-                            </span>
-                            <span class="menu-title">Admin Profile</span>
-                        </a>
-                    </li>
-                }
-                <li class="nav-item menu-items">
-                    <a class="nav-link" asp-controller="Classes" asp-action="Index">
-                        <span class="menu-icon">
-                            <i class="mdi mdi-school"></i>
-                        </span>
-                        <span class="menu-title">Manage Classes Page</span>
-                    </a>
-                </li>
                 <li class="nav-item menu-items">
                     <a class="nav-link" asp-controller="HomePageContents" asp-action="Index">
-                        <span class="menu-icon">
-                            <i class="mdi mdi-home"></i>
-                        </span>
+                        <span class="menu-icon"><i class="mdi mdi-home"></i></span>
                         <span class="menu-title">Manage Home Page</span>
                     </a>
                 </li>
                 <li class="nav-item menu-items">
                     <a class="nav-link" asp-controller="SchedulePageContents" asp-action="Index">
-                        <span class="menu-icon">
-                            <i class="mdi mdi-calendar"></i>
-                        </span>
+                        <span class="menu-icon"><i class="mdi mdi-calendar"></i></span>
                         <span class="menu-title">Manage Schedule Page</span>
                     </a>
                 </li>
                 <li class="nav-item menu-items">
                     <a class="nav-link" asp-controller="ClassPageContents" asp-action="Index">
-                        <span class="menu-icon">
-                            <i class="mdi mdi-briefcase"></i>
-                        </span>
+                        <span class="menu-icon"><i class="mdi mdi-briefcase"></i></span>
                         <span class="menu-title">Manage Class Page</span>
                     </a>
                 </li>
-                <!-- Add this menu item under Admin-only operations -->
-                <!-- Logout -->
                 <li class="nav-item menu-items">
                     <a class="nav-link" asp-controller="Auth" asp-action="Logout">
-                        <span class="menu-icon">
-                            <i class="mdi mdi-logout"></i>
-                        </span>
+                        <span class="menu-icon"><i class="mdi mdi-logout"></i></span>
                         <span class="menu-title">Logout</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
+        <!-- Main Content -->
         <div class="container-fluid page-body-wrapper">
+            <!-- Top Navbar -->
             <nav class="navbar p-0 fixed-top d-flex flex-row">
                 <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
                     <ul class="navbar-nav w-100">
@@ -175,6 +143,7 @@
                 </div>
             </nav>
 
+            <!-- Main Panel -->
             <div class="main-panel">
                 <div class="content-wrapper">
                     @RenderBody()
@@ -187,6 +156,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Scripts -->
     <script src="~/AdminDesign/assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="~/AdminDesign/assets/js/misc.js"></script>
     @RenderSection("Scripts", required: false)

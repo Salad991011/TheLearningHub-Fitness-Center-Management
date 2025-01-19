@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TheLearningHub_Fitness_Center_Management.Models;
+using TheLearningHub_Fitness_Center_Management.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();         // Ensure session middleware is added here
+
+app.UseSession();
+app.UseMiddleware<ProfileImageMiddleware>();// Ensure session middleware is added here
 app.UseAuthentication();  // Enable authentication middleware
 app.UseAuthorization();
 

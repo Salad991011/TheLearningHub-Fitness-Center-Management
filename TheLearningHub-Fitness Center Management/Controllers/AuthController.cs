@@ -30,7 +30,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string username, string password, string returnUrl = "/")
         {
-            // Log inputs
+            // Log inputs for debugging
             Console.WriteLine($"Login Attempt: Username={username}, Password={password}");
 
             // Fetch user from Logins and Users tables
@@ -58,31 +58,37 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             HttpContext.Session.SetInt32("UserId", (int)user.User.UserId);
             HttpContext.Session.SetString("Username", user.Login.UserName ?? user.User.Email);
 
-            // Assuming `user.ProfileImagePath` contains the file name or relative path
-           
+            // Define role name (e.g., "Admin", "Trainer", "User")
+            string roleName = user.Login.RoleId switch
+            {
+                1 => "Admin",
+                3 => "Trainer",
+                2 => "User",
+                _ => "User"
+            };
+
             // Set up claims
             var claims = new List<Claim>
     {
         new Claim(ClaimTypes.Name, user.Login.UserName ?? user.User.Email),
-        new Claim(ClaimTypes.Role, user.Login.RoleId.ToString())
+        new Claim(ClaimTypes.Role, roleName),
+        new Claim("LoginId", user.Login.LoginId.ToString()), // Include LoginId
+        new Claim("UserId", user.User.UserId.ToString()),    // Include UserId
+        new Claim("RoleId", user.Login.RoleId.ToString())    // Include RoleId
     };
 
+            // Create identity and sign in
             var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
             await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
 
             // Redirect based on role
-            switch (user.Login.RoleId)
+            return roleName switch
             {
-                case 1: // Admin
-                    return RedirectToAction("AdminDashboard", "AdminDashboard");
-                case 3: // Trainer
-                    return RedirectToAction("TrainerDashboard", "TrainerDashboard");
-                case 2: // User
-                    return RedirectToAction("Index", "Home");
-                default:
-                    TempData["Error"] = "Invalid role.";
-                    return View("~/Views/LoginAndRegister/Login.cshtml");
-            }
+                "Admin" => RedirectToAction("AdminDashboard", "AdminDashboard"),
+                "Trainer" => RedirectToAction("TrainerDashboard", "TrainerDashboard"),
+                "User" => RedirectToAction("Index", "Home"),
+                _ => View("~/Views/LoginAndRegister/Login.cshtml")
+            };
         }
 
 
