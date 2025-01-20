@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/AdminDesign/assets/vendors/owl-carousel-2/owl.theme.default.min.css">
     <link rel="stylesheet" href="~/AdminDesign/assets/css/style.css">
     <link rel="shortcut icon" href="~/AdminDesign/assets/images/favicon.png" />
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <div class="container-scroller">
@@ -70,6 +71,18 @@
                         </a>
                     </li>
                     <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="ClassPageContents" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-book-open-page-variant"></i></span>
+                            <span class="menu-title">mod Class Page</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="SchedulePageContents" asp-action="Index">
+                            <span class="menu-icon"><i class="mdi mdi-calendar-clock"></i></span>
+                            <span class="menu-title">mod Schedule Page</span>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-items">
                         <a class="nav-link" asp-controller="Services" asp-action="Index">
                             <span class="menu-icon"><i class="mdi mdi-briefcase"></i></span>
                             <span class="menu-title">Manage Services</span>
@@ -87,7 +100,14 @@
                             <span class="menu-title">Admin Profile</span>
                         </a>
                     </li>
+                    <li class="nav-item menu-items">
+                        <a class="nav-link" asp-controller="Auth" asp-action="Logout">
+                            <span class="menu-icon"><i class="mdi mdi-logout"></i></span>
+                            <span class="menu-title">Logout</span>
+                        </a>
+                    </li>
                 }
+
          
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("RoleId") == 3)
                 {

@@ -68,7 +68,32 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 ?? "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam facere optio eligendi.";
             ViewBag.SubscribeMessage = "Stay updated with our latest services and offers.";
             ViewBag.SubscribeEmailPlaceholder = "Email"; // Placeholder text
+
+            ViewBag.ApprovedTestimonials = _context.Testimonials
+        .Include(t => t.User)
+        .Where(t => t.IsApproved == "Approved")
+        .ToList();
+
             return View(plans);
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SubmitTestimonial(Testimonial testimonial)
+        {
+            if (ModelState.IsValid)
+            {
+                testimonial.UserId = HttpContext.Session.GetInt32("UserId"); // Assuming UserId is stored in session
+                testimonial.IsApproved = "Pending"; // Default status
+                _context.Testimonials.Add(testimonial);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Your testimonial has been submitted and is awaiting approval!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to submit testimonial. Please try again.";
+            }
+
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

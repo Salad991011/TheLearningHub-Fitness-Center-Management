@@ -76,7 +76,70 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             ViewBag.ActiveMembers = _context.Users.Count();
             ViewBag.Feedbacks = _context.Contactus.ToList();
 
+            var pendingTestimonials = _context.Testimonials
+       .Include(t => t.User)
+       .Where(t => t.IsApproved == "Pending")
+       .ToList();
+
+            ViewBag.PendingTestimonials = pendingTestimonials;
+
+
             return View("~/Views/AdminDashboard/AdminDashboard.cshtml");
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApproveTestimonial(decimal TestId)
+        {
+            var testimonial = await _context.Testimonials.Include(t => t.User).FirstOrDefaultAsync(t => t.TestId == TestId);
+
+            if (testimonial == null)
+            {
+                TempData["ErrorMessage"] = "Testimonial not found.";
+                return RedirectToAction("AdminDashboard");
+            }
+
+            try
+            {
+                // Approve testimonial
+                testimonial.IsApproved = "Approved";
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Testimonial by {testimonial.User?.Fname} approved successfully.";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to approve testimonial: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to approve testimonial. Please try again.";
+            }
+
+            return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectTestimonial(decimal TestId)
+        {
+            var testimonial = await _context.Testimonials.Include(t => t.User).FirstOrDefaultAsync(t => t.TestId == TestId);
+
+            if (testimonial == null)
+            {
+                TempData["ErrorMessage"] = "Testimonial not found.";
+                return RedirectToAction("AdminDashboard");
+            }
+
+            try
+            {
+                // Reject testimonial
+                testimonial.IsApproved = "Rejected";
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Testimonial by {testimonial.User?.Fname} rejected successfully.";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to reject testimonial: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to reject testimonial. Please try again.";
+            }
+
+            return RedirectToAction("AdminDashboard");
         }
         public IActionResult Profile()
         {

@@ -3,12 +3,13 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 @model List<Class>
+
 <div class="container-fluid">
     <!-- Feedback Messages -->
     <div class="row">
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="col-12">
+            <div class="col-12 mb-3">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     @TempData["SuccessMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -18,7 +19,7 @@
 
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="col-12">
+            <div class="col-12 mb-3">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -29,7 +30,7 @@
 
     <!-- Key Metrics Section -->
     <div class="row text-center mb-4">
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <div class="card text-white bg-primary shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase">Active Members</h6>
@@ -37,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <div class="card text-white bg-success shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase">Total Sales</h6>
@@ -45,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <div class="card text-white bg-info shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase">Active Membership Plans</h6>
@@ -56,7 +57,7 @@
     </div>
 
     <!-- Registered Trainers Section -->
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -150,7 +151,7 @@
     </div>
 
     <!-- Classes Requests Summary Section -->
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -199,8 +200,61 @@
         </div>
     </div>
 
+    <!-- Manage Testimonials Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Manage Testimonials</h4>
+                    <p class="text-muted">Pending Testimonials for Approval</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Testimonial</th>
+                                    <th>Rating</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.PendingTestimonials != null && ViewBag.PendingTestimonials.Count > 0)
+                                {
+                                    foreach (var testimonial in ViewBag.PendingTestimonials)
+                                    {
+                                        <tr>
+                                            <td>@testimonial.User.Fname @testimonial.User.Lname</td>
+                                            <td>@testimonial.TestText</td>
+                                            <td>@testimonial.Rating</td>
+                                            <td>
+                                                <form method="post" action="/Admin/ApproveTestimonial" style="display:inline;">
+                                                    <input type="hidden" name="TestId" value="@testimonial.TestId" />
+                                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                </form>
+                                                <form method="post" action="/Admin/RejectTestimonial" style="display:inline;">
+                                                    <input type="hidden" name="TestId" value="@testimonial.TestId" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No pending testimonials available.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- User Feedback Section -->
-    <div class="row mt-4">
+    <div class="row mb-4">
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -251,8 +305,8 @@
     </div>
 
     <!-- Charts Section -->
-    <div class="row mt-5">
-        <div class="col-lg-6">
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title text-center">Plan Distribution</h4>
@@ -260,7 +314,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title text-center">Trainer Activity</h4>
