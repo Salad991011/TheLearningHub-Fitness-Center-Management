@@ -66,42 +66,59 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CLASSID");
+
             entity.Property(e => e.Classdate)
                 .HasColumnType("DATE")
                 .HasColumnName("CLASSDATE");
+
             entity.Property(e => e.Classdesc)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CLASSDESC");
+
             entity.Property(e => e.Classname)
                 .HasMaxLength(55)
                 .IsUnicode(false)
                 .HasColumnName("CLASSNAME");
+
             entity.Property(e => e.Classtime)
                 .HasPrecision(6)
                 .HasColumnName("CLASSTIME");
+
             entity.Property(e => e.Imagepath)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("IMAGEPATH");
+
             entity.Property(e => e.ISAPPROVED)
-                    .HasColumnType("NUMBER(1)")
-                    .HasDefaultValue(0) // Default value: Not approved
-                    .HasColumnName("ISAPPROVED");
+                .HasColumnType("NUMBER(1)")
+                .HasDefaultValue(0) // Default value: Not approved
+                .HasColumnName("ISAPPROVED");
 
             entity.Property(e => e.Userid)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("USERID");
-            entity.Property(e => e.APPROVALSTATUS)
-               .HasMaxLength(50)
-               .IsUnicode(false)
-               .HasColumnName("APPROVALSTATUS");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Classes)
+            entity.Property(e => e.APPROVALSTATUS)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("APPROVALSTATUS");
+
+            // Define the relationship between Class and User
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Classes)
                 .HasForeignKey(d => d.Userid)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("U123");
+
+            // Define the relationship between Class and Schedules
+            entity.HasMany(d => d.Schedules) // Schedules navigation property
+                .WithOne(p => p.Class)
+                .HasForeignKey(p => p.ClassId) // Foreign key in Schedule
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_SCHEDULE_CLASS");
         });
+
 
         modelBuilder.Entity<ClassPageContent>(entity =>
         {
@@ -436,33 +453,52 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("SCHEDULE_ID");
+
             entity.Property(e => e.Day)
                 .HasColumnType("DATE")
                 .HasColumnName("DAY_");
-            entity.Property(e => e.ImagePath)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("IMAGE_PATH");
-            entity.Property(e => e.PlanId)
-                .HasColumnType("NUMBER(38)")
-                .HasColumnName("PLAN_ID");
-            entity.Property(e => e.RoutineId)
-                .HasColumnType("NUMBER(38)")
-                .HasColumnName("ROUTINE_ID");
+
             entity.Property(e => e.Time)
                 .HasPrecision(6)
                 .HasColumnName("TIME_");
 
-            entity.HasOne(d => d.Plan).WithMany(p => p.Schedules)
+            entity.Property(e => e.ImagePath)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("IMAGE_PATH");
+
+            entity.Property(e => e.PlanId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("PLAN_ID");
+
+            entity.Property(e => e.RoutineId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("ROUTINE_ID");
+
+            entity.Property(e => e.ClassId)
+                .HasColumnType("NUMBER(38)")
+                .HasColumnName("CLASS_ID"); // Add ClassId column
+
+            entity.HasOne(d => d.Plan)
+                .WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.PlanId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_SCHEDULE_PLAN_ID");
+                .HasConstraintName("FK_SCHEDULE_PLAN");
 
-            entity.HasOne(d => d.Routine).WithMany(p => p.Schedules)
+            entity.HasOne(d => d.Routine)
+                .WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.RoutineId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_ROUTINE_PLAN_ID");
+                .HasConstraintName("FK_SCHEDULE_ROUTINE");
+
+            entity.HasOne(d => d.Class) // Configure the relationship with Class
+                .WithMany(p => p.Schedules)
+                .HasForeignKey(d => d.ClassId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_SCHEDULE_CLASS");
         });
+
+
 
         modelBuilder.Entity<SchedulePageContent>(entity =>
         {

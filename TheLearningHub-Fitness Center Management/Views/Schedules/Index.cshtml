@@ -5,56 +5,48 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Schedules</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
+<table class="table table-dark table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Day)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Plan)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Routine)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.Day)</th>
+            <th>@Html.DisplayNameFor(model => model.Time)</th>
+            <th>Image</th> <!-- Updated -->
+            <th>@Html.DisplayNameFor(model => model.Plan.PlanTitle)</th>
+            <th>@Html.DisplayNameFor(model => model.Routine.Desc)</th>
+            <th>@Html.DisplayNameFor(model => model.Class.Classname)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Day)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Plan.PlanId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Routine.RoutineId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ScheduleId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ScheduleId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ScheduleId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Day)</td>
+                <td>@Html.DisplayFor(modelItem => item.Time)</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="/Images/@item.ImagePath" alt="Schedule Image" style="width: 50px; height: 50px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+                </td>
+                <td>@item.Plan?.PlanTitle ?? "N/A"</td>
+                <td>@item.Routine?.Desc ?? "N/A"</td>
+                <td>@item.Class?.Classname ?? "N/A"</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ScheduleId" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.ScheduleId" class="btn btn-primary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.ScheduleId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

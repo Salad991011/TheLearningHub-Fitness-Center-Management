@@ -1,52 +1,33 @@
 ﻿@model TheLearningHub_Fitness_Center_Management.Models.Schedule
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Schedule";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<h1 class="mb-4">Delete Schedule</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Schedule</h4>
-    <hr />
+<div class="card shadow-sm p-4">
+    <h4 class="text-danger">Are you sure you want to delete this schedule?</h4>
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Day)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Day)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Time)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Time)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Plan)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Plan.PlanId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Routine)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Routine.RoutineId)
-        </dd>
+        <dt class="col-sm-3">Date</dt>
+        <dd class="col-sm-9">@Model.Day?.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Time</dt>
+        <dd class="col-sm-9">@Model.Time?.ToString("hh:mm tt")</dd>
+
+        <dt class="col-sm-3">Plan</dt>
+        <dd class="col-sm-9">@Model.Plan?.PlanTitle</dd>
+
+        <dt class="col-sm-3">Routine</dt>
+        <dd class="col-sm-9">@Model.Routine?.Desc</dd>
+
+        <dt class="col-sm-3">Class</dt>
+        <dd class="col-sm-9">@Model.Class?.Classname</dd>
     </dl>
-    
-    <form asp-action="Delete">
+    <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="ScheduleId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
     </form>
 </div>

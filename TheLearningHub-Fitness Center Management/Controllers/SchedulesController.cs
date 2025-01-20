@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +13,21 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
     public class SchedulesController : Controller
     {
         private readonly ModelContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public SchedulesController(ModelContext context)
+        public SchedulesController(ModelContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Schedules
         public async Task<IActionResult> Index()
         {
-            var modelContext = _context.Schedules.Include(s => s.Plan).Include(s => s.Routine);
+            var modelContext = _context.Schedules
+                .Include(s => s.Plan)
+                .Include(s => s.Routine)
+                .Include(s => s.Class);
             return View(await modelContext.ToListAsync());
         }
 
@@ -36,6 +42,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             var schedule = await _context.Schedules
                 .Include(s => s.Plan)
                 .Include(s => s.Routine)
+                .Include(s => s.Class)
                 .FirstOrDefaultAsync(m => m.ScheduleId == id);
             if (schedule == null)
             {
@@ -48,26 +55,39 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         // GET: Schedules/Create
         public IActionResult Create()
         {
-            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanId");
-            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "RoutineId");
+            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanTitle");
+            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "Desc");
+            ViewData["ClassId"] = new SelectList(_context.Classes, "Classid", "Classname");
             return View();
         }
 
         // POST: Schedules/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ScheduleId,Day,Time,ImagePath,PlanId,RoutineId")] Schedule schedule)
+        public async Task<IActionResult> Create([Bind("ScheduleId,Day,Time,ScheduleImageFile,PlanId,RoutineId,ClassId")] Schedule schedule)
         {
             if (ModelState.IsValid)
             {
+                if (schedule.ScheduleImageFile != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(schedule.ScheduleImageFile.FileName);
+                    string filePath = Path.Combine(_hostEnvironment.WebRootPath, "Images", fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await schedule.ScheduleImageFile.CopyToAsync(fileStream);
+                    }
+
+                    schedule.ImagePath = fileName; // Save the file name to the database
+                }
+
                 _context.Add(schedule);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanId", schedule.PlanId);
-            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "RoutineId", schedule.RoutineId);
+            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanTitle", schedule.PlanId);
+            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "Desc", schedule.RoutineId);
+            ViewData["ClassId"] = new SelectList(_context.Classes, "Classid", "Classname", schedule.ClassId);
             return View(schedule);
         }
 
@@ -84,17 +104,16 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             {
                 return NotFound();
             }
-            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanId", schedule.PlanId);
-            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "RoutineId", schedule.RoutineId);
+            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanTitle", schedule.PlanId);
+            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "Desc", schedule.RoutineId);
+            ViewData["ClassId"] = new SelectList(_context.Classes, "Classid", "Classname", schedule.ClassId);
             return View(schedule);
         }
 
         // POST: Schedules/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("ScheduleId,Day,Time,ImagePath,PlanId,RoutineId")] Schedule schedule)
+        public async Task<IActionResult> Edit(decimal id, [Bind("ScheduleId,Day,Time,ScheduleImageFile,PlanId,RoutineId,ClassId,ImagePath")] Schedule schedule)
         {
             if (id != schedule.ScheduleId)
             {
@@ -105,6 +124,19 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             {
                 try
                 {
+                    if (schedule.ScheduleImageFile != null)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(schedule.ScheduleImageFile.FileName);
+                        string filePath = Path.Combine(_hostEnvironment.WebRootPath, "Images", fileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await schedule.ScheduleImageFile.CopyToAsync(fileStream);
+                        }
+
+                        schedule.ImagePath = fileName; // Update the file name in the database
+                    }
+
                     _context.Update(schedule);
                     await _context.SaveChangesAsync();
                 }
@@ -121,8 +153,9 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanId", schedule.PlanId);
-            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "RoutineId", schedule.RoutineId);
+            ViewData["PlanId"] = new SelectList(_context.Paidplans, "PlanId", "PlanTitle", schedule.PlanId);
+            ViewData["RoutineId"] = new SelectList(_context.Routines, "RoutineId", "Desc", schedule.RoutineId);
+            ViewData["ClassId"] = new SelectList(_context.Classes, "Classid", "Classname", schedule.ClassId);
             return View(schedule);
         }
 
@@ -137,6 +170,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             var schedule = await _context.Schedules
                 .Include(s => s.Plan)
                 .Include(s => s.Routine)
+                .Include(s => s.Class)
                 .FirstOrDefaultAsync(m => m.ScheduleId == id);
             if (schedule == null)
             {
@@ -153,32 +187,21 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         {
             if (_context.Schedules == null)
             {
-                return Problem("Entity set 'ModelContext.Schedules'  is null.");
+                return Problem("Entity set 'ModelContext.Schedules' is null.");
             }
             var schedule = await _context.Schedules.FindAsync(id);
             if (schedule != null)
             {
                 _context.Schedules.Remove(schedule);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ScheduleExists(decimal id)
         {
-          return (_context.Schedules?.Any(e => e.ScheduleId == id)).GetValueOrDefault();
+            return (_context.Schedules?.Any(e => e.ScheduleId == id)).GetValueOrDefault();
         }
-        public IActionResult WeeklySchedule(decimal userId)
-        {
-            var schedules = _context.Schedules
-              .Include(s => s.Routine)
-    .Where(s => s.Routine.UserId == userId)
-    .OrderBy(s => s.Day)
-    .ToList();
-
-            return View(schedules);
-        }
-
     }
 }

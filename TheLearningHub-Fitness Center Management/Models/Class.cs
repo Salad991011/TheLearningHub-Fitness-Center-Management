@@ -24,6 +24,6 @@ public partial class Class
     public bool ISAPPROVED { get; set; }
 
     public decimal? Userid { get; set; }
-
+    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     public virtual User? User { get; set; }
 }

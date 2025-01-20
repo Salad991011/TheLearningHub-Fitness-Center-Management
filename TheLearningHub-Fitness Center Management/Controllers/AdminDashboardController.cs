@@ -50,6 +50,11 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                             !clearedClassIds.Contains(c.Classid)) // Exclude cleared classes
                 .ToList();
 
+            // Fetch registered trainers
+            ViewBag.Trainers = _context.Users
+                .Where(u => u.RoleId == 3) // Replace '3' with the correct RoleId for trainers
+                .ToList();
+
             ViewBag.ActiveMemberships = activeMemberships;
             ViewBag.PendingClasses = pendingClasses;
             ViewBag.ClassRequests = classRequests;

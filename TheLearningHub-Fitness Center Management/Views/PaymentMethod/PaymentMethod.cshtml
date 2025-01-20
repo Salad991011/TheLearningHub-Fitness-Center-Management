@@ -81,6 +81,15 @@
                                 </button>
                             </div>
                         </form>
+                        <div class="text-center mt-3">
+                            <form method="post" action="/PaymentMethod/SendInvoice">
+                                <input type="hidden" name="PlanId" value="@Model.PlanId" />
+                                <button type="submit" class="btn btn-secondary btn-lg" style="background-color: #343a40; border: none;">
+                                    Send Invoice to Email
+                                </button>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
             </div>

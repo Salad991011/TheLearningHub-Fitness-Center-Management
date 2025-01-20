@@ -1,49 +1,36 @@
 ﻿@model TheLearningHub_Fitness_Center_Management.Models.Schedule
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Schedule Details";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Schedule Details</h1>
 
-<div>
-    <h4>Schedule</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Day)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Day)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Time)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Time)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Plan)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Plan.PlanId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Routine)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Routine.RoutineId)
-        </dd>
-    </dl>
+<div class="card text-white bg-dark">
+    <div class="card-body">
+        <p><strong>Date:</strong> @Model.Day?.ToString("yyyy-MM-dd")</p>
+        <p><strong>Time:</strong> @Model.Time?.ToString("hh:mm tt")</p>
+        <p><strong>Image:</strong></p>
+        <p><strong>Image:</strong></p>
+        <div>
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="/Images/@Model.ImagePath" alt="Schedule Image" style="max-width: 200px; object-fit: cover;" />
+            }
+            else
+            {
+                <span>No Image</span>
+            }
+        </div>
+
+        <p><strong>Plan:</strong> @Model.Plan?.PlanTitle ?? "N/A"</p>
+        <p><strong>Routine:</strong> @Model.Routine?.Desc ?? "N/A"</p>
+        <p><strong>Class:</strong> @Model.Class?.Classname ?? "N/A"</p>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ScheduleId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.ScheduleId" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>
