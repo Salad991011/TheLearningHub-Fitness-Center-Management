@@ -1,4 +1,51 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model TheLearningHub_Fitness_Center_Management.Models.User
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <!-- Back Button -->
+    <div class="mb-3">
+        <a href="/TrainerDashboard/TrainerDashboard" class="btn btn-primary">
+            <i class="mdi mdi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="card" style="background-color: #1e293b; color: #ffffff; border-radius: 8px;">
+        <div class="card-header" style="background-color: #3b82f6; color: #ffffff; font-size: 1.5rem;">
+            Profile Information
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First Name:</label>
+                <input type="text" class="form-control" id="firstName"
+                       value="@Model.Fname" readonly
+                       style="background-color: #ffffff; color: #000000; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 6px;">
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name:</label>
+                <input type="text" class="form-control" id="lastName"
+                       value="@Model.Lname" readonly
+                       style="background-color: #ffffff; color: #000000; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 6px;">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email"
+                       value="@Model.Email" readonly
+                       style="background-color: #ffffff; color: #000000; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 6px;">
+            </div>
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Phone Number:</label>
+                <input type="text" class="form-control" id="phoneNumber"
+                       value="@Model.PhoneNumber" readonly
+                       style="background-color: #ffffff; color: #000000; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 6px;">
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Image:</label><br />
+                <img src="@Model.ImagePath" alt="Profile Image"
+                     style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6;">
+            </div>
+        </div>
+    </div>
+</div>

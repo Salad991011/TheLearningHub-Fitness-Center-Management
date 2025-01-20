@@ -8,35 +8,59 @@
 <h1>Trainer Dashboard</h1>
 <hr />
 
-<div class="table-responsive">
-    <table class="table table-bordered">
+<div class="row">
+    <div class="col-md-6">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Classes Created</h5>
+                <p class="card-text" style="font-size: 2rem;">@ViewBag.TotalClassesCreated</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Users Attending Classes</h5>
+                <p class="card-text" style="font-size: 2rem;">@ViewBag.TotalUsersAttendingClasses</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table for Users Attending Trainer's Classes -->
+<div class="table-responsive mt-4">
+    <h3 class="mb-3">Users Attending Your Classes</h3>
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Membership Name</th>
+                <th>Phone Number</th>
+                <th>Membership Plan</th>
                 <th>Membership Start</th>
                 <th>Membership End</th>
-                <th>Trainer Name</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in ViewBag.AssignedUsers as List<TheLearningHub_Fitness_Center_Management.Models.User>)
+            @if (ViewBag.UsersAttendingClasses != null && ((List<TheLearningHub_Fitness_Center_Management.Models.User>)ViewBag.UsersAttendingClasses).Count > 0)
             {
-                var membership = user.Subscriptions?.FirstOrDefault();
-                var trainer = user.Routines?.FirstOrDefault()?.Trainer;
-
+                foreach (var user in (List<TheLearningHub_Fitness_Center_Management.Models.User>)ViewBag.UsersAttendingClasses)
+                {
+                    var membership = user.Subscriptions?.FirstOrDefault();
+                    <tr>
+                        <td>@user.Fname @user.Lname</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@(membership?.Plan?.PlanTitle ?? "N/A")</td>
+                        <td>@(membership?.DateFrom?.ToShortDateString() ?? "N/A")</td>
+                        <td>@(membership?.DateTo?.ToShortDateString() ?? "N/A")</td>
+                    </tr>
+                }
+            }
+            else
+            {
                 <tr>
-                    <td>@user.Fname @user.Lname</td>
-                    <td>@user.Email</td>
-                    <td>@(membership?.Plan?.PlanTitle ?? "N/A")</td>
-                    <td>@(membership?.DateFrom?.ToShortDateString() ?? "N/A")</td>
-                    <td>@(membership?.DateTo?.ToShortDateString() ?? "N/A")</td>
-                    <td>@(trainer != null ? $"{trainer.Fname} {trainer.Lname}" : "N/A")</td>
-                    <td>
-                        <a asp-action="EditWeeklySchedule" asp-route-userId="@user.UserId" class="btn btn-primary">Edit Weekly Schedule</a>
-                    </td>
+                    <td colspan="6" class="text-center">No users are attending your classes.</td>
                 </tr>
             }
         </tbody>

@@ -18,7 +18,6 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [Authorize(Roles = "Trainer")]
         public IActionResult TrainerDashboard()
         {
-            // Retrieve UserId from claims
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
             if (userIdClaim == null)
             {
@@ -26,21 +25,46 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 return RedirectToAction("AccessDenied", "Auth");
             }
 
-            var userId = int.Parse(userIdClaim.Value); // Convert UserId to integer
+            var userId = int.Parse(userIdClaim.Value); // Trainer's ID
 
-            // Fetch data specific to this trainer
+            // Total Classes Created by the Trainer
+            var totalClassesCreated = _context.Classes
+                .Where(c => c.Userid == userId) // Trainer's UserId matches the Class's Userid
+                .Count();
+
+            // Total Users Attending the Trainer's Classes
+            var totalUsersAttendingClasses = _context.Routines
+                .Where(r => r.TrainerId == userId) // Filter by TrainerId in Routines
+                .Select(r => r.UserId)
+                .Distinct()
+                .Count();
+
+            // Assigned users for this trainer
             var assignedUsers = _context.Users
                 .Include(u => u.Subscriptions)
-                    .ThenInclude(s => s.Plan)
+                .ThenInclude(s => s.Plan)
                 .Include(u => u.Routines)
-                    .ThenInclude(r => r.Trainer)
-                .Where(u => u.Routines.Any(r => r.TrainerId == userId)) // Filter by Trainer's UserId
+                .ThenInclude(r => r.Trainer)
+                .Where(u => u.Routines.Any(r => r.TrainerId == userId)) // Users with Routines mapped to the Trainer
                 .ToList();
+            var usersAttendingClasses = _context.Users
+    .Include(u => u.Subscriptions)
+    .ThenInclude(s => s.Plan)
+    .Where(u => _context.Routines.Any(r => r.TrainerId == userId && r.UserId == u.UserId))
+    .ToList();
 
+            // Pass the list to the view
+            ViewBag.UsersAttendingClasses = usersAttendingClasses;
+            ViewBag.TotalClassesCreated = totalClassesCreated;
+            ViewBag.TotalUsersAttendingClasses = totalUsersAttendingClasses;
             ViewBag.AssignedUsers = assignedUsers;
 
             return View();
         }
+
+
+
+
         public IActionResult Profile()
         {
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
