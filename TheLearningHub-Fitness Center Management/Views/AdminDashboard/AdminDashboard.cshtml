@@ -29,24 +29,24 @@
 
     <!-- Key Metrics Section -->
     <div class="row text-center mb-4">
-        <div class="col-md-4 grid-margin stretch-card">
-            <div class="card text-white bg-primary">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase">Active Members</h6>
                     <h3 class="font-weight-bold">@ViewBag.ActiveMembers</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 grid-margin stretch-card">
-            <div class="card text-white bg-success">
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase">Total Sales</h6>
                     <h3 class="font-weight-bold">$@ViewBag.TotalSales</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 grid-margin stretch-card">
-            <div class="card text-white bg-info">
+        <div class="col-md-4">
+            <div class="card text-white bg-info shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase">Active Membership Plans</h6>
                     <h3 class="font-weight-bold">@ViewBag.ActiveMemberships</h3>
@@ -57,8 +57,8 @@
 
     <!-- Registered Trainers Section -->
     <div class="row">
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">Registered Trainers</h4>
                     <div class="table-responsive">
@@ -98,9 +98,8 @@
         </div>
 
         <!-- Manage Classes Section -->
-        <!-- Manage Classes Section -->
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">Manage Classes</h4>
                     <p class="text-muted">Pending Class Requests</p>
@@ -148,10 +147,12 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Classes Requests Summary Section -->
-        <div class="col-md-12 grid-margin stretch-card">
-            <div class="card">
+    <!-- Classes Requests Summary Section -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">Classes Requests Summary</h4>
                     <p class="text-muted">Approved or Rejected Requests</p>
@@ -175,9 +176,7 @@
                                         foreach (var classRequest in ViewBag.ClassRequests)
                                         {
                                             <tr>
-                                                <td>
-                                                    <input type="checkbox" name="selectedClassIds" value="@classRequest.Classid" />
-                                                </td>
+                                                <td><input type="checkbox" name="selectedClassIds" value="@classRequest.Classid" /></td>
                                                 <td>@classRequest.Classname</td>
                                                 <td>@classRequest.Classdesc</td>
                                                 <td>@classRequest.User.Fname @classRequest.User.Lname</td>
@@ -198,20 +197,17 @@
                 </div>
             </div>
         </div>
+    </div>
 
-
-
-
-        <!-- User Feedback Section -->
-        <div class="col-md-12 grid-margin stretch-card">
-            <div class="card">
+    <!-- User Feedback Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">User Feedback</h4>
                     <p class="text-muted">Feedback submitted by users</p>
                     <form method="post" action="/Admin/DeleteSelectedFeedback">
-                        <div class="mb-3">
-                            <button type="submit" class="btn btn-danger">Delete Selected</button>
-                        </div>
+                        <button type="submit" class="btn btn-danger mb-2">Delete Selected</button>
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
@@ -225,7 +221,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (ViewBag.Feedbacks != null && ((List<Contactu>)ViewBag.Feedbacks).Count > 0)
+                                    @if (ViewBag.Feedbacks != null && ViewBag.Feedbacks.Count > 0)
                                     {
                                         foreach (var feedback in ViewBag.Feedbacks)
                                         {
@@ -242,7 +238,7 @@
                                     else
                                     {
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted">No feedback available.</td>
+                                            <td colspan="6" class="text-center">No feedback available.</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -253,15 +249,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-5">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Plan Distribution</h4>
+                    <canvas id="planChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Trainer Activity</h4>
+                    <canvas id="trainerActivityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Automatically dismiss alerts after 5 seconds
-    setTimeout(() => {
-        const alerts = document.querySelectorAll('.alert-dismissible');
-        alerts.forEach(alert => {
-            alert.classList.add('hidden');
-            setTimeout(() => alert.remove(), 500); // Remove after fade out
-        });
-    }, 5000);
+    // Plan Distribution Chart
+    const planChartCtx = document.getElementById('planChart').getContext('2d');
+    const planData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.PlanData));
+    new Chart(planChartCtx, {
+        type: 'doughnut',
+        data: {
+            labels: planData.map(p => p.PlanTitle),
+            datasets: [{
+                data: planData.map(p => p.Count),
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff']
+            }]
+        }
+    });
+
+    // Trainer Activity Chart
+    const trainerActivityCtx = document.getElementById('trainerActivityChart').getContext('2d');
+    const trainerActivityData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.TrainerActivity));
+    new Chart(trainerActivityCtx, {
+        type: 'bar',
+        data: {
+            labels: trainerActivityData.map(t => `Trainer ${t.TrainerId}`),
+            datasets: [{
+                label: 'Classes Conducted',
+                data: trainerActivityData.map(t => t.ClassCount),
+                backgroundColor: '#36a2eb'
+            }]
+        }
+    });
 </script>

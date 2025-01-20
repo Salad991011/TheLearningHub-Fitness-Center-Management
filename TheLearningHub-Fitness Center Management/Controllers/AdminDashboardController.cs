@@ -47,13 +47,27 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             var classRequests = _context.Classes
                 .Include(c => c.User)
                 .Where(c => (c.APPROVALSTATUS == "Approved" || c.APPROVALSTATUS == "Rejected") &&
-                            !clearedClassIds.Contains(c.Classid)) // Exclude cleared classes
+                            !clearedClassIds.Contains(c.Classid))
                 .ToList();
 
             // Fetch registered trainers
             ViewBag.Trainers = _context.Users
-                .Where(u => u.RoleId == 3) // Replace '3' with the correct RoleId for trainers
+                .Where(u => u.RoleId == 3)
                 .ToList();
+
+            // Chart Data: Active Plans
+            var planData = _context.Paidplans
+                .GroupBy(p => p.PlanTitle)
+                .Select(g => new { PlanTitle = g.Key, Count = g.Count() })
+                .ToList();
+            ViewBag.PlanData = planData;
+
+            // Chart Data: Trainer Activity
+            var trainerClasses = _context.Classes
+                .GroupBy(c => c.Userid)
+                .Select(g => new { TrainerId = g.Key, ClassCount = g.Count() })
+                .ToList();
+            ViewBag.TrainerActivity = trainerClasses;
 
             ViewBag.ActiveMemberships = activeMemberships;
             ViewBag.PendingClasses = pendingClasses;
