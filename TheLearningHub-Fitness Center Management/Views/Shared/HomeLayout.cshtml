@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="~/HomeDesign/css/aos.css">
     
     <link rel="stylesheet" href="~/HomeDesign/css/style.css">
+  
 </head>
 
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -50,6 +51,7 @@
                                 {
                                     <li><a asp-controller="Home" asp-action="Schedule" class="nav-link">Schedule</a></li>
                                     <li><a asp-controller="Home" asp-action="Classes" class="nav-link">Classes</a></li>
+                                    <li><a asp-controller="Home" asp-action="Profile" class="nav-link">Profile</a></li>
                                     <li><a asp-controller="Auth" asp-action="Logout" class="nav-link">Logout</a></li>
                                 }
                                 else
@@ -71,47 +73,41 @@
             @RenderBody()
         </div>
 
-        <footer class="footer-section bg-dark">
+        <footer class="footer-section bg-dark text-white py-5">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
-                        <h3 class="text-white">@ViewBag.FooterTitle</h3>
+                        <h3>@ViewBag.FooterTitle</h3>
                         <p>@ViewBag.FooterDescription</p>
                     </div>
-
                     <div class="col-md-3 ml-auto">
-                        <h3 class="text-white">Links</h3>
+                        <h3>Links</h3>
                         <ul class="list-unstyled footer-links">
-                            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li><a asp-controller="Home" asp-action="Classes">Classes</a></li>
-                            <li><a asp-controller="Home" asp-action="Schedule">Schedule</a></li>
-                            <li><a asp-controller="Auth" asp-action="Register">SignUp</a></li>
+                            <li><a class="text-white" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a class="text-white" asp-controller="Home" asp-action="Classes">Classes</a></li>
+                            <li><a class="text-white" asp-controller="Home" asp-action="Schedule">Schedule</a></li>
+                            <li><a class="text-white" asp-controller="Auth" asp-action="Register">SignUp</a></li>
                         </ul>
                     </div>
-
                     <div class="col-md-4">
-                        <h3 class="text-white">Contact Us</h3>
+                        <h3>Contact Us</h3>
                         <p>@ViewBag.FooterEmail</p>
-                        <form action="#">
-                            <div class="d-flex mb-5">
-                                <input type="email" class="form-control rounded-0" placeholder="Your Email">
-                                <input type="submit" class="btn btn-primary rounded-0" value="Send">
+                        <form>
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Your Email">
+                                <button type="submit" class="btn btn-primary">Send</button>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <div class="row pt-5 mt-5 text-center">
-                    <div class="col-md-12">
-                        <div class="pt-5">
-                            <p>
-                                &copy; <script>document.write(new Date().getFullYear())</script> Workout. All rights reserved.
-                            </p>
-                        </div>
+                <div class="row text-center mt-4">
+                    <div class="col-12">
+                        <p class="mb-0">&copy; @DateTime.Now.Year Workout. All rights reserved.</p>
                     </div>
                 </div>
             </div>
         </footer>
+
 
 
     </div>

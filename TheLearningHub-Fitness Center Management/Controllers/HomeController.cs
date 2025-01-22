@@ -63,9 +63,8 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                 ?? "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam facere optio eligendi.";
             ViewBag.FooterEmail = homePageContent.FooterEmail ?? "default@example.com";
 
-            ViewBag.FooterTitle = homePageContent.BackgroundTitle1 ?? "About Workout";
-            ViewBag.FooterDescription = homePageContent.BackgroundDesc1
-                ?? "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam facere optio eligendi.";
+
+               
             ViewBag.SubscribeMessage = "Stay updated with our latest services and offers.";
             ViewBag.SubscribeEmailPlaceholder = "Email"; // Placeholder text
 
@@ -173,6 +172,31 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [HttpGet]
         public async Task<IActionResult> Classes(string search)
         {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            // Check for active membership
+            var hasActiveMembership = await _context.Subscriptions
+                .AnyAsync(s => s.UserId == userId && s.DateFrom <= DateTime.Now && s.DateTo >= DateTime.Now);
+
+            if (!hasActiveMembership)
+            {
+                var defaultPageContent = new ClassPageContent
+                {
+                    BackgroundTitle1 = "Membership Required",
+                    BackgroundDesc1 = "You need an active membership to view the classes.",
+                    BackgroundImagePath1 = "default.jpg", // Replace with a valid default image if needed
+                    ClassesTitle = "Membership Only",
+                    ClassesDesc = "Subscribe to a plan to access our exclusive classes."
+                };
+
+                ViewBag.MembershipMessage = "Membership only";
+                return View("Classes", (defaultPageContent, Enumerable.Empty<Class>()));
+            }
+
             var pageContent = await _context.ClassPageContents.FirstOrDefaultAsync()
                 ?? new ClassPageContent
                 {
@@ -183,27 +207,22 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
                     ClassesDesc = "Default Classes Description"
                 };
 
-            // Fetch all approved classes
             var classesQuery = _context.Classes
-                .Include(c => c.User) // Include trainer details
+                .Include(c => c.User)
                 .Where(c => c.ISAPPROVED == true);
 
             IEnumerable<Class> classes;
 
-            // If a search term is provided, apply the filter after fetching data in memory
             if (!string.IsNullOrEmpty(search))
             {
-                var classesList = await classesQuery.ToListAsync(); // Fetch all classes into memory
-                classes = classesList
-                    .Where(c =>
-                        c.Classname?.ToLower().Contains(search.ToLower()) == true ||
-                        c.Classdate?.ToString("MMMM dd, yyyy").ToLower().Contains(search.ToLower()) == true ||
-                        (c.User != null && $"{c.User.Fname} {c.User.Lname}".ToLower().Contains(search.ToLower()))
-                    );
+                var classesList = await classesQuery.ToListAsync();
+                classes = classesList.Where(c =>
+                    c.Classname?.ToLower().Contains(search.ToLower()) == true ||
+                    c.Classdate?.ToString("MMMM dd, yyyy").ToLower().Contains(search.ToLower()) == true ||
+                    (c.User != null && $"{c.User.Fname} {c.User.Lname}".ToLower().Contains(search.ToLower())));
             }
             else
             {
-                // No search term, fetch directly from the database
                 classes = await classesQuery.ToListAsync();
             }
 
@@ -257,6 +276,100 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             TempData["SuccessMessage"] = "You have successfully subscribed to the class!";
             return RedirectToAction("Schedule");
         }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            // Convert userId to decimal to match the UserId property type
+            var user = await _context.Users.FindAsync((decimal)userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var activeSubscription = await _context.Subscriptions
+                .Where(s => s.UserId == (decimal)userId && s.DateFrom <= DateTime.Now && s.DateTo >= DateTime.Now)
+                .Select(s => new
+                {
+                    s.Plan.PlanTitle,
+                    Duration = (s.DateTo.HasValue && s.DateFrom.HasValue)
+                                ? (int)((s.DateTo.Value - s.DateFrom.Value).TotalDays / 30)
+                                : (int?)null,
+                    s.DateFrom,
+                    s.DateTo
+                })
+                .FirstOrDefaultAsync();
+
+            ViewBag.Subscription = activeSubscription;
+
+            // Set footer information
+            var homePageContent = _context.HomePageContents.FirstOrDefault()
+                ?? new HomePageContent
+                {
+                    FooterTitle = "Default Footer Title",
+                    FooterTitleDesc = "Default Footer Description",
+                    FooterEmail = "default@example.com"
+                };
+
+            ViewBag.FooterTitle = homePageContent.FooterTitle ?? "About Workout";
+            ViewBag.FooterDescription = homePageContent.FooterTitleDesc ?? "Default Footer Description";
+            ViewBag.FooterEmail = homePageContent.FooterEmail ?? "default@example.com";
+
+            return View(user);
+        }
+
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Profile(User updatedUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(updatedUser);
+            }
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            user.Fname = updatedUser.Fname;
+            user.Lname = updatedUser.Lname;
+            user.Email = updatedUser.Email;
+            user.PhoneNumber = updatedUser.PhoneNumber;
+
+            if (updatedUser.UsersImageFile != null)
+            {
+                // Save the uploaded image logic here
+                string imagePath = Path.Combine("wwwroot/Images", Path.GetFileName(updatedUser.UsersImageFile.FileName));
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await updatedUser.UsersImageFile.CopyToAsync(stream);
+                }
+                user.ImagePath = Path.GetFileName(updatedUser.UsersImageFile.FileName);
+            }
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Profile updated successfully!";
+            return RedirectToAction("Profile");
+        }
 
         [HttpGet]
         public JsonResult CheckLogin()
@@ -274,6 +387,47 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            if (newPassword != confirmPassword)
+            {
+                TempData["ErrorMessage"] = "New password and confirm password do not match.";
+                return RedirectToAction("Profile");
+            }
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var user = await _context.Users
+                .Include(u => u.Login)
+                .FirstOrDefaultAsync(u => u.UserId == (decimal)userId);
+
+            if (user == null || user.Login == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Profile");
+            }
+
+            if (user.Login.Password != currentPassword) // Replace with hashed password comparison
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return RedirectToAction("Profile");
+            }
+
+            // Update password (use hashing for security)
+            user.Login.Password = newPassword; // Replace with hashed password
+            _context.Update(user.Login);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Password updated successfully.";
+            return RedirectToAction("Profile");
         }
     }
 }

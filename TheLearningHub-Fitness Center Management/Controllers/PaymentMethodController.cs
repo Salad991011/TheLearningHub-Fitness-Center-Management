@@ -37,7 +37,8 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             ViewBag.ActiveSubscription = activeSubscription != null;
             ViewBag.RemainingDays = activeSubscription != null ? (activeSubscription.DateTo.Value - DateTime.Now).Days : 0;
             ViewBag.CurrentEndDate = activeSubscription?.DateTo?.ToString("MM/dd/yyyy");
-            ViewBag.ErrorMessage = activeSubscription != null ? "You already have this plan subscribed." : null;
+            ViewBag.HasSubscription = activeSubscription != null; // New variable
+            ViewBag.ErrorMessage = activeSubscription != null ? "You already have this plan subscribed." : "No active membership!";
 
             // Calculate subscription start and end dates for a new subscription
             var startDate = DateTime.Now;
@@ -50,6 +51,7 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
 
             return View(plan);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ProcessPayment(int planId, int duration, string cardNumber, string cardHolderName, string expiryDate, string cvv, bool extend = false)

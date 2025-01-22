@@ -3,7 +3,7 @@
     ViewData["Title"] = "PaymentMethod";
     Layout = "~/Views/Shared/HomeLayout.cshtml";
 
-    // Default messages
+    var noActiveSubscriptionMessage = "No active membership!";
     var defaultMessage = "You already have an active subscription!";
     var extendingMessage = "Extending helps you stay with us longer!";
 }
@@ -23,12 +23,13 @@
                         <p class="card-text mt-3 text-muted">@Model.PlanDesc</p>
                         <hr />
                         <p id="dynamicMessage" class="text-warning">
-                            @(ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription ? defaultMessage : "You can subscribe to this plan!")
+                            @(ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription ? defaultMessage : noActiveSubscriptionMessage)
                         </p>
-                        @if (ViewBag.ActiveSubscription != null && ViewBag.ActiveSubscription)
+                        @if (ViewBag.ActiveSubscription != null && ViewBag.SelectedDuration > 1)
                         {
-                            <p id="remainingDays">Remaining Days: @ViewBag.RemainingDays days</p>
-                            <p id="currentEndDate">Current End Date: @ViewBag.CurrentEndDate</p>
+                            <p id="extendingMessage" style="color: purple;">
+                                @extendingMessage
+                            </p>
                         }
                         <p id="planDuration" class="mb-1"><strong>Duration:</strong> @ViewBag.SelectedDuration Months</p>
                         <p id="startDate" class="mb-1"><strong>Start Date:</strong> @ViewBag.StartDate</p>
@@ -45,12 +46,12 @@
                         Payment Method
                     </div>
                     <div class="card-body">
-                        <form method="post" action="/PaymentMethod/ProcessPayment">
+                        <form method="post" action="/PaymentMethod/ProcessPayment" id="paymentForm">
                             <input type="hidden" name="PlanId" value="@Model.PlanId" />
                             <input type="hidden" name="Price" id="hiddenPrice" value="@ViewBag.Price" />
                             <div class="mb-3">
                                 <label for="cardNumber" class="form-label">Card Number</label>
-                                <input type="text" id="cardNumber" name="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" required />
+                                <input type="text" id="cardNumber" name="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" required pattern="\d{16}" title="Card number must be 16 digits" />
                             </div>
                             <div class="mb-3">
                                 <label for="cardHolderName" class="form-label">Cardholder Name</label>
@@ -59,11 +60,11 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" id="expiryDate" name="ExpiryDate" class="form-control" placeholder="MM/YY" required />
+                                    <input type="text" id="expiryDate" name="ExpiryDate" class="form-control" placeholder="MM/YY" required pattern="(0[1-9]|1[0-2])\/\d{2}" title="Enter a valid expiry date in MM/YY format" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" id="cvv" name="CVV" class="form-control" placeholder="123" required />
+                                    <input type="text" id="cvv" name="CVV" class="form-control" placeholder="123" required pattern="\d{3,4}" title="CVV must be 3 or 4 digits" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -81,7 +82,7 @@
                                 </button>
                             </div>
                         </form>
-                        <div class="text-center mt-3">
+                        <div class="text-center mt-3" id="invoiceSection" style="display: none;">
                             <form method="post" action="/PaymentMethod/SendInvoice">
                                 <input type="hidden" name="PlanId" value="@Model.PlanId" />
                                 <button type="submit" class="btn btn-secondary btn-lg" style="background-color: #343a40; border: none;">
@@ -89,7 +90,6 @@
                                 </button>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -116,13 +116,22 @@
 
         // Update dynamic message
         const dynamicMessage = document.getElementById('dynamicMessage');
-        if (duration > @ViewBag.SelectedDuration) {
+        const extendingMessage = document.getElementById('extendingMessage');
+        if (duration > 1) {
             dynamicMessage.textContent = "Extending helps you stay with us longer!";
+            dynamicMessage.style.color = "purple";
         } else {
-            dynamicMessage.textContent = "You already have an active subscription!";
+            dynamicMessage.textContent = "No active membership!";
+            dynamicMessage.style.color = "#FFD700";
         }
 
         // Update hidden price field for form submission
         document.getElementById('hiddenPrice').value = price;
     }
+
+    // Show invoice section after successful purchase
+    document.getElementById('paymentForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Simulate submission for demo purposes
+        document.getElementById('invoiceSection').style.display = "block";
+    });
 </script>
