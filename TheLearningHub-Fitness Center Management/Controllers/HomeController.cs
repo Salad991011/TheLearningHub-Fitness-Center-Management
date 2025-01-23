@@ -331,21 +331,22 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [HttpPost]
         public async Task<IActionResult> Profile(User updatedUser)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(updatedUser);
-            }
-
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            var user = await _context.Users.FindAsync(userId);
+            // Cast userId to decimal to match the primary key type
+            var user = await _context.Users.FindAsync((decimal)userId);
             if (user == null)
             {
                 return NotFound("User not found.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(updatedUser);
             }
 
             user.Fname = updatedUser.Fname;
@@ -393,6 +394,12 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
+            if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                TempData["ErrorMessage"] = "New password and confirm password cannot be empty.";
+                return RedirectToAction("Profile");
+            }
+
             if (newPassword != confirmPassword)
             {
                 TempData["ErrorMessage"] = "New password and confirm password do not match.";
@@ -429,5 +436,6 @@ namespace TheLearningHub_Fitness_Center_Management.Controllers
             TempData["SuccessMessage"] = "Password updated successfully.";
             return RedirectToAction("Profile");
         }
+
     }
 }

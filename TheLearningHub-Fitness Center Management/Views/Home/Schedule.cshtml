@@ -4,6 +4,19 @@
     Layout = "~/Views/Shared/HomeLayout.cshtml";
     ViewData["Title"] = "Schedule";
 }
+<style>
+    body {
+        background-color: #1c1c1c;
+        padding-top: 80px; /* Adjust based on navbar height */
+    }
+
+    .site-navbar {
+        position: fixed;
+        width: 100%;
+        z-index: 999;
+        top: 0;
+    }
+</style>
 
 <!-- Background Section -->
 <div class="bgimg" style="background-image: url('/Images/@Model.Item1.BackgroundImagePath1'); background-size: cover; background-color: #1c1c1c; color: #fff;">

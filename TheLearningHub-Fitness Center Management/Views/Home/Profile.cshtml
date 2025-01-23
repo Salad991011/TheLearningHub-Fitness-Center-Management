@@ -147,19 +147,20 @@
     <form asp-action="ChangePassword" asp-controller="Home" method="post" class="row g-3">
         <div class="col-md-12">
             <label for="currentPassword" class="form-label">Current Password</label>
-            <input type="password" name="CurrentPassword" class="form-control" required />
+            <input type="password" name="currentPassword" class="form-control" required />
         </div>
         <div class="col-md-12">
             <label for="newPassword" class="form-label">New Password</label>
-            <input type="password" name="NewPassword" class="form-control" required />
+            <input type="password" name="newPassword" class="form-control" required />
         </div>
         <div class="col-md-12">
-            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-            <input type="password" name="ConfirmNewPassword" class="form-control" required />
+            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+            <input type="password" name="confirmPassword" class="form-control" required />
         </div>
         <div class="col-12 text-center">
             <button type="submit" class="btn btn-primary btn-lg">Change Password</button>
         </div>
     </form>
+
 </div>
 
